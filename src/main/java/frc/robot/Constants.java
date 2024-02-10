@@ -6,7 +6,10 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -52,15 +55,17 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 11;
-    public static final int kRearLeftDrivingCanId = 13;
-    public static final int kFrontRightDrivingCanId = 15;
-    public static final int kRearRightDrivingCanId = 17;
 
-    public static final int kFrontLeftTurningCanId = 10;
-    public static final int kRearLeftTurningCanId = 12;
-    public static final int kFrontRightTurningCanId = 14;
-    public static final int kRearRightTurningCanId = 16;
+    public static final int kFrontRightDrivingCanId = 1;
+    public static final int kFrontLeftDrivingCanId = 2;
+    public static final int kRearLeftDrivingCanId = 3;
+    public static final int kRearRightDrivingCanId = 4;
+
+
+    public static final int kFrontRightTurningCanId = 5;
+    public static final int kFrontLeftTurningCanId = 6;
+    public static final int kRearLeftTurningCanId = 7;
+    public static final int kRearRightTurningCanId = 8;
 
     public static final boolean kGyroReversed = false;
   }
@@ -119,6 +124,7 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
+    public static final double kSpeedMultiplier = 0.15;
   }
 
   public static final class AutoConstants {
@@ -138,5 +144,14 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static class VisionConstants {
+    /**
+     * Physical location of the camera on the robot, relative to the center of the robot.
+     */
+    public static final Transform3d CAMERA_TO_ROBOT =
+        new Transform3d(new Translation3d(0.0, 0.0, 0), new Rotation3d());
+    public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
   }
 }

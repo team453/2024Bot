@@ -13,8 +13,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -33,10 +33,10 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final DriveSubsystem m_drivetrain = new DriveSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -45,17 +45,20 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    // Configure default commands
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true),
-            m_robotDrive));
+  // Configure default commands
+m_drivetrain.setDefaultCommand(
+    // The joystick's Y axis controls forward/backward movement,
+    // the X axis controls left/right movement, and
+    // Z controls turning.
+    new RunCommand(
+        () -> m_drivetrain.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier, // Forward/backward
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Left/right
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
+            false, true),
+        m_drivetrain));
+
+   
   }
 
   /**
@@ -68,10 +71,21 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
+    new JoystickButton(m_driverController, 9)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
+            () -> m_drivetrain.setX(),
+             m_drivetrain));
+
+                   //When holding the tri gger, use the driverDriveSpeed
+    new JoystickButton(m_driverController, 1) // Create a new JoystickButton binding for button 9 on m_driver joystick
+    .whileTrue(
+        new RunCommand(
+        () -> m_drivetrain.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Forward/backward
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Left/right
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
+            true, true),
+        m_drivetrain));
   }
 
   /**
@@ -103,20 +117,20 @@ public class RobotContainer {
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
+         m_drivetrain::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
         // Position controllers
         new PIDController(AutoConstants.kPXController, 0, 0),
         new PIDController(AutoConstants.kPYController, 0, 0),
         thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
+         m_drivetrain::setModuleStates,
+        m_drivetrain);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+     m_drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() ->  m_drivetrain.drive(0, 0, 0, false, false));
   }
 }
