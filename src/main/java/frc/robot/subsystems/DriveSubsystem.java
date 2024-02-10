@@ -134,12 +134,11 @@ public class DriveSubsystem extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-    /*var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)))
-            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));*/
-
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(fieldRelative? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, getGyroscopeRotation()))));
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+      fieldRelative
+          ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getFusedHeading()))
+          : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
+  
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -183,7 +182,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    m_gyro.reset();
+    m_gyro.setFusedHeading(0.0); // Set the fused heading to zero
   }
 
   /**
@@ -192,8 +191,9 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)).getDegrees();
-  }
+    return m_gyro.getFusedHeading(); // Get the current fused heading
+    }
+  
 
   /**
    * Returns the turn rate of the robot.
@@ -201,7 +201,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate(IMUAxis.kZ) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+   // Assuming that the PigeonIMU provides a method to get the current rate of rotation.
+        // If such a method is not provided, you will need to calculate this manually.
+        double[] xyz_dps = new double[3];
+        m_gyro.getRawGyro(xyz_dps);
+        return xyz_dps[2] * (DriveConstants.kGyroReversed ? -1.0 : 1.0); // Assuming z-axis is the axis of rotation
   }
 
  /**
@@ -210,7 +214,9 @@ public class DriveSubsystem extends SubsystemBase {
  * @return The current rotation of the robot as a Rotation2d object.
  */
 public Rotation2d getGyroscopeRotation() {
-  return Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ));
+  // The getFusedHeading() method returns the fused heading in degrees directly.
+  // This heading is used to create a new Rotation2d object.
+  return Rotation2d.fromDegrees(m_gyro.getFusedHeading());
 }
 
 /**
