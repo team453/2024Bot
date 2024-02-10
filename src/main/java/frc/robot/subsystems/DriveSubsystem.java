@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,12 +16,16 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
+
+  
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -40,6 +46,13 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightDrivingCanId,
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
+  //module[0] = m_frontLeft;
+  private MAXSwerveModule[] modules = new MAXSwerveModule[4];
+  {modules[0] = m_frontLeft;
+    modules[1] = m_frontRight;
+    modules[2] = m_rearLeft;
+    modules[3] = m_rearRight;}
+
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
@@ -64,8 +77,25 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  
+
+
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    AutoBuilder.configureHolonomic(
+      this::getPose, 
+      this::resetOdometry, 
+      this::getSpeeds, 
+      this::driveRobotRelative, 
+      Constants.Swerve.pathFollowerConfig, 
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if(alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      }, this);
   }
 
   @Override
@@ -90,6 +120,8 @@ public class DriveSubsystem extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
+
+
   /**
    * Resets the odometry to the specified pose.
    *
@@ -106,6 +138,30 @@ public class DriveSubsystem extends SubsystemBase {
         },
         pose);
   }
+
+  public ChassisSpeeds getSpeeds() {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
+  }
+
+  public SwerveModuleState[] getModuleStates(){
+    SwerveModuleState[] states = new SwerveModuleState[modules.length];
+    for(int i = 0; i < modules.length; i++)
+    {
+      states[i] = modules[i].getState();
+    }
+
+    return states;
+  }
+
+  public void driveRobotRelative(ChassisSpeeds robotRelatigveSpeeds){
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelatigveSpeeds, 0.02);
+
+    SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
+
+    setModuleStates(targetStates);
+  }
+
+  
 
   /**
    * Method to drive the robot using joystick info.
@@ -242,5 +298,5 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getRate(IMUAxis.kZ) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
- 
+  
 }
