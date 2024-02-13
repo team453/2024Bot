@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +20,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -34,6 +36,7 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
+  private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
@@ -57,8 +60,6 @@ m_drivetrain.setDefaultCommand(
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
             false, true),
         m_drivetrain));
-
-   
   }
 
   /**
@@ -117,7 +118,7 @@ m_drivetrain.setDefaultCommand(
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         exampleTrajectory,
-         m_drivetrain::getPose, // Functional interface to feed supplier
+         m_poseEstimator::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
         // Position controllers
@@ -128,7 +129,7 @@ m_drivetrain.setDefaultCommand(
         m_drivetrain);
 
     // Reset odometry to the starting pose of the trajectory.
-     m_drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+     m_poseEstimator.setCurrentPose(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() ->  m_drivetrain.drive(0, 0, 0, false, false));

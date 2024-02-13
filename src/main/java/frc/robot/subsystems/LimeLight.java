@@ -14,7 +14,7 @@ public class LimeLight extends SubsystemBase {
     public double ty;
     public double tv;
     public double ta;
-    private final Field2d m_field = new Field2d();
+    public double ts;
 
 
     public LimeLight(){
@@ -31,6 +31,7 @@ public class LimeLight extends SubsystemBase {
          tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
          ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
          ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+         ts = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ts").getDouble(0);
 
         if (tv < 1.0)
         {
@@ -45,6 +46,7 @@ public class LimeLight extends SubsystemBase {
         SmartDashboard.putNumber("LimeLight TX", tx);
         SmartDashboard.putNumber("LimeLight TY", ty);
         SmartDashboard.putNumber("LimeLight TA", ta);
+        SmartDashboard.putNumber("LimeLight TS", ts);
         SmartDashboard.putBoolean("Target Aquired", m_ValidTarget);
 
 

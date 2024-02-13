@@ -27,6 +27,7 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -154,4 +155,10 @@ public final class Constants {
         new Transform3d(new Translation3d(0.0, 0.0, 0), new Rotation3d());
     public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
   }
+
+   public static final class AutonomousConstants {
+    public static final double kAutoCorrectSpeed = 0.25;
+    public static final double kAutoCorrectTurn = 0.25;
+    public static final double kAutoCorrectStrafe = 0.25;
+   }
 }
