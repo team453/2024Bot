@@ -15,14 +15,17 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.UnderBotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.UnderBotSubsystemConstants;
 import java.util.List;
 
 /*
@@ -34,9 +37,12 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
+    private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+    // The operator's controller
+    Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -68,7 +74,7 @@ m_drivetrain.setDefaultCommand(
    * subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
    * passing it to a
-   * {@link JoystickButton}.
+   * {@link JoystickButton}
    */
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, 9)
@@ -86,7 +92,26 @@ m_drivetrain.setDefaultCommand(
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
             true, true),
         m_drivetrain));
+
+
+    //underbot stuff
+    
+   //Launch with set speeds
+    new JoystickButton(m_operatorController, OIConstants.kShooterButton) // Create a new JoystickButton binding for button 9 on m_driver joystick
+    .whileTrue(
+     new RunCommand(() -> m_underBot.stop()
+        .withTimeout(UnderBotSubsystemConstants.kShooterDelay) // Set the timeout to fully stop motors
+           .andThen(m_underBot.ShooterCommand())) // Shoot the note
+        .handleInterrupt(() -> m_underBot.stop())); // Handle any interruption by stopping the launcher
+  
+    new JoystickButton(m_operatorController, OIConstants.kIntakeButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(
+     new RunCommand(() -> m_underBot.stop()
+           .andThen(m_underBot.IntakeCommand())) // Intake the note
+        .handleInterrupt(() -> m_underBot.stop())); // Handle any interruption by stopping the launcher
+
   }
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

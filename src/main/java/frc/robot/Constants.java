@@ -27,6 +27,20 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static final class UnderBotSubsystemConstants {
+    public static final int kMotorCanId = 1;
+    public static final int kBeamBreakDioPort = 0;
+
+    public static final double kIntakeSpeed = 0.5;
+    public static final double kShooterSpeed = 0.75;
+
+    public static final double kShooterDelay = 0.5;
+    public static final double kShooterTime = 3;
+  }
+
+
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -122,9 +136,19 @@ public final class Constants {
   }
 
   public static final class OIConstants {
+    //ports
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
+
+    //buttons
+    public static final int kIntakeButton = 1;
+    public static final int kShooterButton = 2;
+
+
+    // Deadband for the joysticks
     public static final double kDriveDeadband = 0.05;
     public static final double kSpeedMultiplier = 0.15;
+    
   }
 
   public static final class AutoConstants {
