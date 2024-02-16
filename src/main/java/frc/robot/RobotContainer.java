@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_drivetrain = new DriveSubsystem();
+ // private final DriveSubsystem m_drivetrain = new DriveSubsystem();
     private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
 
   // The driver's controller
@@ -52,6 +52,7 @@ public class RobotContainer {
     configureButtonBindings();
 
   // Configure default commands
+  /* 
 m_drivetrain.setDefaultCommand(
     // The joystick's Y axis controls forward/backward movement,
     // the X axis controls left/right movement, and
@@ -63,7 +64,7 @@ m_drivetrain.setDefaultCommand(
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
             false, true),
         m_drivetrain));
-
+*/
    
   }
 
@@ -76,7 +77,9 @@ m_drivetrain.setDefaultCommand(
    * passing it to a
    * {@link JoystickButton}
    */
+ 
   private void configureButtonBindings() {
+     /* 
     new JoystickButton(m_driverController, 9)
         .whileTrue(new RunCommand(
             () -> m_drivetrain.setX(),
@@ -92,32 +95,34 @@ m_drivetrain.setDefaultCommand(
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
             true, true),
         m_drivetrain));
-
+*/
 
     //underbot stuff
     
-   //Launch with set speeds
-    new JoystickButton(m_operatorController, OIConstants.kShooterButton) // Create a new JoystickButton binding for button 9 on m_driver joystick
-    .whileTrue(
-     new RunCommand(() -> m_underBot.stop()
-        .withTimeout(UnderBotSubsystemConstants.kShooterDelay) // Set the timeout to fully stop motors
-           .andThen(m_underBot.ShooterCommand())) // Shoot the note
-        .handleInterrupt(() -> m_underBot.stop())); // Handle any interruption by stopping the launcher
-  
-    new JoystickButton(m_operatorController, OIConstants.kIntakeButton) // Binding for trigger on m_operatorController joystick
-    .whileTrue(
-     new RunCommand(() -> m_underBot.stop()
-           .andThen(m_underBot.IntakeCommand())) // Intake the note
-        .handleInterrupt(() -> m_underBot.stop())); // Handle any interruption by stopping the launcher
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotIntakeButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.IntakeCommand())
+    .onFalse(m_underBot.StopUnderbot());
 
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotEjectButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.EjectCommand());
+
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterHighButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.HighSpeedShootCommand());
+
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.LowSpeedShootCommand());
+    
   }
   
-
+ public Command getAutonomousCommand() 
+ {
+    return null;
+ }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
+   
   public Command getAutonomousCommand() {
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
@@ -158,4 +163,5 @@ m_drivetrain.setDefaultCommand(
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() ->  m_drivetrain.drive(0, 0, 0, false, false));
   }
+  */
 }

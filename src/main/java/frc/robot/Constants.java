@@ -28,15 +28,45 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
+  public static final class OIConstants {
+    //ports
+    public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
+
+    //operator buttons
+    public static final int kUnderbotIntakeButton = 5;
+    public static final int kUnderbotEjectButton = 6;
+    public static final int kUnderbotShooterHighButton = 3;
+    public static final int kUnderbotShooterLowButton = 4;
+
+    //driver buttons
+    public static final int kFieldPositionButton = 1;
+
+    // Deadband for the joysticks
+    public static final double kDriveDeadband = 0.05;
+    public static final double kSpeedMultiplier = 0.15;
+    
+  }
+
   public static final class UnderBotSubsystemConstants {
-    public static final int kMotorCanId = 1;
-    public static final int kBeamBreakDioPort = 0;
+    //ports
+    public static final int kIntakeMotorCanId = 11;
+    public static final int kShooterMotorCanId = 12;
+    public static final int kBeamBreakAnalogPort = 0;
 
+    //beam break sensor
+    public static final double kBeamBreakThreshold = 1200;
+
+    //speeds
     public static final double kIntakeSpeed = 0.5;
-    public static final double kShooterSpeed = 0.75;
+    public static final double kOuttakeSpeed = -0.5;
+    public static final double kIntakeFeederSpeed = 0.5;
 
+    public static final double kHighShooterSpeed = 0.75;
+    public static final double kLowShooterSpeed = 0.25;
+
+    //timings
     public static final double kShooterDelay = 0.5;
-    public static final double kShooterTime = 3;
   }
 
 
@@ -135,21 +165,6 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
-  public static final class OIConstants {
-    //ports
-    public static final int kDriverControllerPort = 0;
-    public static final int kOperatorControllerPort = 1;
-
-    //buttons
-    public static final int kIntakeButton = 1;
-    public static final int kShooterButton = 2;
-
-
-    // Deadband for the joysticks
-    public static final double kDriveDeadband = 0.05;
-    public static final double kSpeedMultiplier = 0.15;
-    
-  }
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;

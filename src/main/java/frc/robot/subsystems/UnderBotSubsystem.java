@@ -3,88 +3,128 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.UnderBotSubsystemConstants;
 
 public class UnderBotSubsystem extends SubsystemBase {
 
-    //the whole thing is controlled by one neo
-    private final CANSparkMax m_motor;
+    private final CANSparkMax m_intake;
+    private final CANSparkMax m_shooter;
 
     //beam break sensor
-    private final DigitalInput m_beamBreak;
-    
+    private final AnalogInput m_beamBreak;    
   /** Creates a new ExampleSubsystem. */
   public UnderBotSubsystem() {
-    m_motor = new CANSparkMax(UnderBotSubsystemConstants.kMotorCanId, MotorType.kBrushless);
-    m_beamBreak = new DigitalInput(UnderBotSubsystemConstants.kBeamBreakDioPort);
+    m_beamBreak = new AnalogInput(UnderBotSubsystemConstants.kBeamBreakAnalogPort);
+    m_intake = new CANSparkMax(UnderBotSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
+    m_shooter = new CANSparkMax(UnderBotSubsystemConstants.kShooterMotorCanId, MotorType.kBrushed);
+    // Sets the AnalogInput to 8-bit averaging.  64 samples will be averaged together.
+    // The update rate will decrease by a factor of 64.
+    m_beamBreak.setAverageBits(8);
   }
-
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
   
+
    public Command IntakeCommand() {
-    // Create a new run command that will run the motor
-    return new RunCommand(() -> {
-        // Continuously check if the beam break sensor is tripped
-        if (getBeamBreak()) {
-            // If the beam break is tripped, stop the motor
-            m_motor.set(0);
+      return new FunctionalCommand(
+    // No initialization action needed for the intake command
+    () -> {},
+
+    // Command execution: Run the motor unless the beam break is tripped
+    () -> {
+        if (!isBeamBroken()) {
+            m_intake.set(UnderBotSubsystemConstants.kIntakeSpeed);
         } else {
-            // If the beam break is not tripped, keep running the motor
-            m_motor.set(UnderBotSubsystemConstants.kIntakeSpeed); 
+            m_intake.set(0);
         }
-    }, this) {
-        // Override the isFinished method to stop the command when the beam break is tripped
-        @Override
-        public boolean isFinished() {
-            return getBeamBreak();
-        }
-    };
+    },
+
+    // Command end action: Stop the motor, whether the command ends normally or is interrupted
+    interrupted -> m_intake.set(0),
+
+    // Command is finished when the beam break sensor is tripped
+    this::isBeamBroken,
+
+    // Require the intake subsystem
+    this
+);
+
+}
+/*// Create a new run command that will run the motor
+   */
+
+public Command EjectCommand() {
+  // The startEnd helper method takes a method to call when the command is initialized and one to
+    // call when it ends
+    return this.startEnd(
+        // When the command is initialized, set the wheels to the intake speed values
+        () -> {
+          m_intake.set(UnderBotSubsystemConstants.kOuttakeSpeed);
+        },
+        // When the command stops, stop the wheels
+        () -> {
+         m_intake.set(0);
+        });
+
 }
 
-public Command stop()
+public Command HighSpeedShootCommand() {
+ return this.startEnd(
+        // When the command is initialized, set the wheels to the intake speed values
+        () -> {
+          m_shooter.set(UnderBotSubsystemConstants.kHighShooterSpeed);
+          m_intake.set(UnderBotSubsystemConstants.kIntakeFeederSpeed);
+        },
+        // When the command stops, stop the wheels
+        () -> {
+         m_intake.set(0);
+          m_shooter.set(0);
+        });
+
+}
+
+public Command LowSpeedShootCommand() {
+     return this.startEnd(
+        // When the command is initialized, set the wheels to the intake speed values
+        () -> {
+          m_shooter.set(UnderBotSubsystemConstants.kLowShooterSpeed);
+          m_intake.set(UnderBotSubsystemConstants.kIntakeFeederSpeed);
+        },
+        // When the command stops, stop the wheels
+        () -> {
+         m_intake.set(0);
+          m_shooter.set(0);
+        });
+
+}
+
+public Command StopUnderbot()
 {
   return new RunCommand(() -> {
-    m_motor.set(0);
-  }, this);
-
+   //stop all motors
+   m_intake.set(0);
+   m_shooter.set(0);
+}, this); 
 }
 
-  public Command ShooterCommand() {
-    //run the motor for a set speed
-    return new RunCommand(() -> {
-        m_motor.set(UnderBotSubsystemConstants.kShooterSpeed);
-    }, this);
-    }
 
-
-  
-  public boolean getBeamBreak() {
-    return !m_beamBreak.get();
+  public double getBeamBreak() {
+    return m_beamBreak.getValue();
   }
   
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public boolean isBeamBroken() {
+    return getBeamBreak() > UnderBotSubsystemConstants.kBeamBreakThreshold;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("UnderBot Beam Break Sensor", !m_beamBreak.get());
+        // This method will be called once per scheduler run
+    SmartDashboard.putNumber("UnderBot Beam Break Sensor", m_beamBreak.getValue());
   }
 
   @Override
