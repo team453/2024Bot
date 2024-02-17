@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
@@ -16,6 +12,8 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -27,68 +25,68 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
-/*
- * This class is where the bulk of the robot should be declared.  Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
- * (including subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
-  // The robot's subsystems
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
-
-  // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  private final SendableChooser<Double> speedChooser = new SendableChooser<>();
+  
+  // Add a boolean variable to track field position state
+  private boolean isFieldPositionEnabled = false; // Initialize to false by default
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
   public RobotContainer() {
-    // Configure the button bindings
     configureButtonBindings();
-
-  // Configure default commands
-m_drivetrain.setDefaultCommand(
-    // The joystick's Y axis controls forward/backward movement,
-    // the X axis controls left/right movement, and
-    // Z controls turning.
-    new RunCommand(
-        () -> m_drivetrain.drive(
-            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier, // Forward/backward
-            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Left/right
-            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
-            false, true),
-        m_drivetrain));
+   updateShuffleboard();
+    configureDefaultDriveCommand();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-   * subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-   * passing it to a
-   * {@link JoystickButton}.
-   */
+  private void updateShuffleboard() {
+    speedChooser.setDefaultOption("Low Speed", OIConstants.kLowSpeedMultiplier);
+    speedChooser.addOption("Medium Speed", OIConstants.kMediumSpeedMultiplier);
+    speedChooser.addOption("High Speed", OIConstants.kHighSpeedMultiplier);
+    SmartDashboard.putData("Speed Multiplier", speedChooser);
+    
+    
+    // Update the SmartDashboard with the initial field position state
+    SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
+  }
+
+  private void configureDefaultDriveCommand() {
+    m_drivetrain.setDefaultCommand(
+      new RunCommand(() -> {
+          double speedMultiplier = speedChooser.getSelected();
+           isFieldPositionEnabled = false;
+          m_drivetrain.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
+            false, isFieldPositionEnabled);
+        }, 
+        m_drivetrain)
+    );
+  }
+
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, 9)
         .whileTrue(new RunCommand(
             () -> m_drivetrain.setX(),
              m_drivetrain));
 
-                   //When holding the tri gger, use the driverDriveSpeed
-    new JoystickButton(m_driverController, 1) // Create a new JoystickButton binding for button 9 on m_driver joystick
-    .whileTrue(
-        new RunCommand(
-        () -> m_drivetrain.drive(
-            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Forward/backward
-            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Left/right
-            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
-            true, true),
+    new JoystickButton(m_driverController, 1)
+    .whileTrue(new RunCommand(() -> {
+          double speedMultiplier = speedChooser.getSelected();
+          // Toggle the field position state when button 1 is pressed
+          isFieldPositionEnabled = true;
+          // Update the SmartDashboard with the new state
+          SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
+          m_drivetrain.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
+            true, isFieldPositionEnabled);
+        }, 
         m_drivetrain));
   }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
