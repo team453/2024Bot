@@ -74,33 +74,18 @@ public Command EjectCommand() {
 }
 
 public Command HighSpeedShootCommand() {
- return this.startEnd(
-        // When the command is initialized, set the wheels to the intake speed values
-        () -> {
-          m_shooter.set(UnderBotSubsystemConstants.kHighShooterSpeed);
-          m_intake.set(UnderBotSubsystemConstants.kIntakeFeederSpeed);
-        },
-        // When the command stops, stop the wheels
-        () -> {
-         m_intake.set(0);
-          m_shooter.set(0);
-        });
+  return new RunCommand(() -> m_shooter.set(UnderBotSubsystemConstants.kHighShooterSpeed)) // Start the shooter
+      .withTimeout(UnderBotSubsystemConstants.kShooterDelay) // Set the timeout for the preparation
+       .andThen(() -> m_intake.set(UnderBotSubsystemConstants.kIntakeFeederSpeed)) // Feed in the note
+      .handleInterrupt(() -> this.StopUnderbot()); // Stop the shooter and intake if the command is interrupted
 
 }
 
 public Command LowSpeedShootCommand() {
-     return this.startEnd(
-        // When the command is initialized, set the wheels to the intake speed values
-        () -> {
-          m_shooter.set(UnderBotSubsystemConstants.kLowShooterSpeed);
-          m_intake.set(UnderBotSubsystemConstants.kIntakeFeederSpeed);
-        },
-        // When the command stops, stop the wheels
-        () -> {
-         m_intake.set(0);
-          m_shooter.set(0);
-        });
-
+ return new RunCommand(() -> m_shooter.set(UnderBotSubsystemConstants.kLowShooterSpeed)) // Start the shooter
+      .withTimeout(UnderBotSubsystemConstants.kShooterDelay) // Set the timeout for the preparation
+       .andThen(() -> m_intake.set(UnderBotSubsystemConstants.kIntakeFeederSpeed)) // Feed in the note
+      .handleInterrupt(() -> this.StopUnderbot()); // Stop the shooter and intake if the command is interrupted
 }
 
 public Command StopUnderbot()
