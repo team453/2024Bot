@@ -162,8 +162,10 @@ public final class Constants {
   
       // Vision measurement standard deviations
       /**
-   * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
-   * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
+  Similar to the state standard deviations, these constants represent the standard deviations of measurements coming from
+   the vision system, but for the position and orientation (theta) as perceived by the vision system. These values inform 
+   the pose estimation algorithm about the expected accuracy of the vision measurements. Again, higher values suggest less 
+   reliability of these measurements, causing the algorithm to weigh them less heavily when updating the robot's estimated pose.
    */
       public static final double VISION_MEASUREMENT_STD_DEV_X = 0.5; // Standard deviation for the x-coordinate in meters from vision
       public static final double VISION_MEASUREMENT_STD_DEV_Y = 0.5; // Standard deviation for the y-coordinate in meters from vision
