@@ -149,11 +149,22 @@ public final class Constants {
 
   public static class VisionConstants {
       // State standard deviations
+      /**
+   These constants represent the standard deviations of the robot's state estimates for its x-coordinate, y-coordinate, 
+   and orientation (theta), respectively. The values are expressed in meters for the x and y coordinates, and radians for 
+   the orientation. These standard deviations are used in the Kalman filter within the pose estimator to indicate how much 
+   the algorithm should "trust" its current estimate of the robot's state. Higher values mean less trust in the estimate, 
+   leading the algorithm to rely more on new sensor inputs to correct the estimate.
+   */
       public static final double STATE_STD_DEV_X = 0.05; // Standard deviation for the x-coordinate in meters
       public static final double STATE_STD_DEV_Y = 0.05; // Standard deviation for the y-coordinate in meters
       public static final double STATE_STD_DEV_THETA = Units.degreesToRadians(5); // Standard deviation for the orientation in radians
   
       // Vision measurement standard deviations
+      /**
+   * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
+   * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
+   */
       public static final double VISION_MEASUREMENT_STD_DEV_X = 0.5; // Standard deviation for the x-coordinate in meters from vision
       public static final double VISION_MEASUREMENT_STD_DEV_Y = 0.5; // Standard deviation for the y-coordinate in meters from vision
       public static final double VISION_MEASUREMENT_STD_DEV_THETA = Units.degreesToRadians(10); // Standard deviation for the orientation in radians from vision
@@ -164,7 +175,7 @@ public final class Constants {
      * Physical location of the camera on the robot, relative to the center of the robot.
      */
     public static final Transform3d CAMERA_TO_ROBOT =
-    new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
+    new Transform3d(new Translation3d(0, 0.0, 0), new Rotation3d());
     public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
     }
 
