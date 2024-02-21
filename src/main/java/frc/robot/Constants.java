@@ -148,13 +148,25 @@ public final class Constants {
   }
 
   public static class VisionConstants {
-    /**
+      // State standard deviations
+      public static final double STATE_STD_DEV_X = 0.05; // Standard deviation for the x-coordinate in meters
+      public static final double STATE_STD_DEV_Y = 0.05; // Standard deviation for the y-coordinate in meters
+      public static final double STATE_STD_DEV_THETA = Units.degreesToRadians(5); // Standard deviation for the orientation in radians
+  
+      // Vision measurement standard deviations
+      public static final double VISION_MEASUREMENT_STD_DEV_X = 0.5; // Standard deviation for the x-coordinate in meters from vision
+      public static final double VISION_MEASUREMENT_STD_DEV_Y = 0.5; // Standard deviation for the y-coordinate in meters from vision
+      public static final double VISION_MEASUREMENT_STD_DEV_THETA = Units.degreesToRadians(10); // Standard deviation for the orientation in radians from vision
+ 
+      public static final double MaxPoseAmbiguity = 0.2; //The ta value
+
+       /**
      * Physical location of the camera on the robot, relative to the center of the robot.
      */
     public static final Transform3d CAMERA_TO_ROBOT =
-        new Transform3d(new Translation3d(0.0, 0.0, 0), new Rotation3d());
+    new Transform3d(new Translation3d(-0.3425, 0.0, -0.233), new Rotation3d());
     public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
-  }
+    }
 
    public static final class AutonomousConstants {
     public static final double kAutoCorrectSpeed = 0.25;
