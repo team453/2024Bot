@@ -181,9 +181,17 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
     }
 
-   public static final class AutonomousConstants {
+     public static final class AutonomousConstants {
+
     public static final double kAutoCorrectSpeed = 0.25;
     public static final double kAutoCorrectTurn = 0.25;
     public static final double kAutoCorrectStrafe = 0.25;
+
+    //Alignment Constants
+    public static final double Kp = 0.1;
+    public static final double Ki = 0.0001;
+    public static final double Kd = 0.01;
+    public static final double  steeringAdjust = 0.05;
+    public static final double  headingErrorThreshold = 0.5; 
    }
 }
