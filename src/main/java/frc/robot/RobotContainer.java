@@ -36,8 +36,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureButtonBindings();
-   updateShuffleboard();
     configureDefaultDriveCommand();
+   updateShuffleboard();
   }
 
   private void updateShuffleboard() {
@@ -56,6 +56,8 @@ public class RobotContainer {
       new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
            isFieldPositionEnabled = false;
+              // Update the SmartDashboard with the current state after changing it
+          SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
