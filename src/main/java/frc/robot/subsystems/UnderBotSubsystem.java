@@ -23,7 +23,7 @@ public class UnderBotSubsystem extends SubsystemBase {
   public UnderBotSubsystem() {
     m_beamBreak = new AnalogInput(UnderBotSubsystemConstants.kBeamBreakAnalogPort);
     m_intake = new CANSparkMax(UnderBotSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
-    m_shooter = new CANSparkMax(UnderBotSubsystemConstants.kShooterMotorCanId, MotorType.kBrushed);
+    m_shooter = new CANSparkMax(UnderBotSubsystemConstants.kShooterMotorCanId, MotorType.kBrushless);
     // Sets the AnalogInput to 8-bit averaging.  64 samples will be averaged together.
     // The update rate will decrease by a factor of 64.
     m_beamBreak.setAverageBits(8);

@@ -60,9 +60,9 @@ public final class Constants {
     //speeds
     public static final double kIntakeSpeed = 0.5;
     public static final double kOuttakeSpeed = -0.5;
-    public static final double kIntakeFeederSpeed = 0.5;
+    public static final double kIntakeFeederSpeed = 0.25;
 
-    public static final double kHighShooterSpeed = 0.75;
+    public static final double kHighShooterSpeed = 0.55;
     public static final double kLowShooterSpeed = 0.25;
 
     //timings
