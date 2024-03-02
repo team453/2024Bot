@@ -133,6 +133,17 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));*/
-    return autoChooser.getSelected();
+
+
+
+
+
+
+    //return autoChooser.getSelected();
+
+    //CURRENT PATHS: rotCurvePath, curvePath, straightPath, rotatePath
+    PathPlannerPath path = PathPlannerPath.fromPathFile("straightPath");
+
+    return AutoBuilder.followPath(path);
   }
 }
