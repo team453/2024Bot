@@ -9,7 +9,10 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -27,6 +30,13 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class OIConstants {
+    public static final int kDriverControllerPort = 1;
+    public static final int kOperatorControllerPort = 0; 
+    public static final double kDriveDeadband = 0.05;
+    public static final double kSpeedMultiplier = 0.5;
+  }
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -54,17 +64,18 @@ public final class Constants {
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
-    // SPARK MAX CAN IDs
-    public static final int kFrontRightDrivingCanId = 1;
-    public static final int kFrontLeftDrivingCanId = 2;
-    public static final int kRearLeftDrivingCanId = 3;
-    public static final int kRearRightDrivingCanId = 4;
+     // SPARK MAX CAN IDs
 
 
-    public static final int kFrontRightTurningCanId = 5;
-    public static final int kFrontLeftTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 7;
-    public static final int kRearRightTurningCanId = 8;
+     public static final int kFrontRightDrivingCanId = 5;
+     public static final int kFrontLeftDrivingCanId = 7;
+     public static final int kRearLeftDrivingCanId = 1;
+     public static final int kRearRightDrivingCanId = 3;
+ 
+     public static final int kFrontRightTurningCanId = 4;
+     public static final int kFrontLeftTurningCanId = 2;
+     public static final int kRearLeftTurningCanId = 8;
+     public static final int kRearRightTurningCanId = 6;
 
     public static final boolean kGyroReversed = false;
   }
@@ -120,10 +131,6 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
-  public static final class OIConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
-  }
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
@@ -161,4 +168,66 @@ public final class Constants {
       new ReplanningConfig()
     );
   }
+
+  public static final class AutonomousConstants {
+
+    public static final double kAutoCorrectSpeed = 0.25;
+    public static final double kAutoCorrectTurn = 0.25;
+    public static final double kAutoCorrectStrafe = 0.25;
+    
+
+    //Align With Tag Constants
+    public static final double Kp = 0.1;
+    public static final double Ki = 0.0001;
+    public static final double Kd = 0.01;
+    public static final double steeringAdjust = 0.05;  // Fixed adjustment for steering
+    public static final double headingErrorThreshold = 0.5;  // Threshold for considering alignment complete
+
+    // Constants for AlignWithSpeaker command
+    public static final double TX_MIN = -2.0; // Minimum acceptable tx 
+    public static final double TX_MAX = 2.0;  // Maximum acceptable tx 
+    public static final double TA_MIN = 0.5;  // Minimum acceptable ta 
+    public static final double TA_MAX = 1.5;  // Maximum acceptable ta 
+    public static final double TX_THRESHOLD = 0.5; // Threshold for tx to consider in alignment
+    public static final double TA_THRESHOLD = 0.1; // Threshold for ta to consider in alignment
+    public static final double KpAim = 0.1;   // Proportional aiming constant
+    public static final double KpDistance = 0.1; // Proportional distance constant
+    
+
+   }
+
+   public static class VisionConstants {
+      // State standard deviations
+      /**
+   These constants represent the standard deviations of the robot's state estimates for its x-coordinate, y-coordinate, 
+   and orientation (theta), respectively. The values are expressed in meters for the x and y coordinates, and radians for 
+   the orientation. These standard deviations are used in the Kalman filter within the pose estimator to indicate how much 
+   the algorithm should "trust" its current estimate of the robot's state. Higher values mean less trust in the estimate, 
+   leading the algorithm to rely more on new sensor inputs to correct the estimate.
+   */
+      public static final double STATE_STD_DEV_X = 0.05; // Standard deviation for the x-coordinate in meters
+      public static final double STATE_STD_DEV_Y = 0.05; // Standard deviation for the y-coordinate in meters
+      public static final double STATE_STD_DEV_THETA = Units.degreesToRadians(5); // Standard deviation for the orientation in radians
+  
+      // Vision measurement standard deviations
+      /**
+  Similar to the state standard deviations, these constants represent the standard deviations of measurements coming from
+   the vision system, but for the position and orientation (theta) as perceived by the vision system. These values inform 
+   the pose estimation algorithm about the expected accuracy of the vision measurements. Again, higher values suggest less 
+   reliability of these measurements, causing the algorithm to weigh them less heavily when updating the robot's estimated pose.
+   */
+      public static final double VISION_MEASUREMENT_STD_DEV_X = 0.5; // Standard deviation for the x-coordinate in meters from vision
+      public static final double VISION_MEASUREMENT_STD_DEV_Y = 0.5; // Standard deviation for the y-coordinate in meters from vision
+      public static final double VISION_MEASUREMENT_STD_DEV_THETA = Units.degreesToRadians(10); // Standard deviation for the orientation in radians from vision
+ 
+      public static final double MaxPoseAmbiguity = 0.2; //The ta value
+
+       /**
+     * Physical location of the camera on the robot, relative to the center of the robot.
+     */
+    public static final Transform3d CAMERA_TO_ROBOT =
+    new Transform3d(new Translation3d(0, 0.0, 0), new Rotation3d());
+    public static final Transform3d ROBOT_TO_CAMERA = CAMERA_TO_ROBOT.inverse();
+    }
+
 }
