@@ -19,7 +19,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AlignWithTag;
+import frc.robot.commands.AlignWithTagPID;
+import frc.robot.helpers.LimelightHelpers;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -37,6 +41,9 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
+  private final LimeLight m_limeLight = new LimeLight();
+  private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
+  private final AlignWithTagPID m_AlignWithTagPID =  new AlignWithTagPID(m_drivetrain, m_limeLight);
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
@@ -87,6 +94,9 @@ m_drivetrain.setDefaultCommand(
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
             true, true),
         m_drivetrain));
+
+    new JoystickButton(m_driverController, 7).whileTrue(m_AlignWithTag);
+    new JoystickButton(m_driverController, 8).whileTrue(m_AlignWithTagPID);
   }
 
   /**

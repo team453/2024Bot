@@ -33,7 +33,7 @@ public class AlignWithTag extends Command {
             limelight.updateLimeLightTracking();
             // Calculate the heading error to the indicated target
             
-            double heading_error = -limelight.tx;
+            double heading_error = limelight.tx;
             double steering_adjust = 0.0;
             if (Math.abs(heading_error) > 1.0) {
                 steering_adjust = -AutonomousConstants.Kp * heading_error + (heading_error > 0 ? -AutonomousConstants.steeringAdjust :AutonomousConstants.steeringAdjust);
