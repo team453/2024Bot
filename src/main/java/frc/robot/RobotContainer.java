@@ -36,12 +36,12 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
  // private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
-  private final LimeLight m_limeLight = new LimeLight();
-  private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
+ // private final LimeLight m_limeLight = new LimeLight();
+  //private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
     private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
-    private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+    //private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
     // The robot's subsystems
-private final WallSubsystem m_wallSubsystem = new WallSubsystem();
+//private final WallSubsystem m_wallSubsystem = new WallSubsystem();
 
 
 
@@ -62,8 +62,8 @@ private final WallSubsystem m_wallSubsystem = new WallSubsystem();
     // Constructor logic including setting default commands and configuring button bindings
     configureDriverButtonBindings();
     configureUnderBotButtonBindings();
-    configureClimberButtonBindings();
-    configureWallButtonBindings();
+    //configureClimberButtonBindings();
+    //configureWallButtonBindings();
 
 
     // Update the SmartDashboard with the initial field position state
@@ -114,7 +114,7 @@ private final WallSubsystem m_wallSubsystem = new WallSubsystem();
         m_drivetrain));
         
         // Align with target button binding
-       new JoystickButton(m_driverController, OIConstants.kDriverAlignButton).whileTrue(m_AlignWithTag);
+       //new JoystickButton(m_driverController, OIConstants.kDriverAlignButton).whileTrue(m_AlignWithTag);
     }
 
     private void configureUnderBotButtonBindings() {
@@ -132,6 +132,7 @@ private final WallSubsystem m_wallSubsystem = new WallSubsystem();
             .whileTrue(m_underBot.LowSpeedShootCommand());
     }
 
+    /* 
     private void configureClimberButtonBindings() {
        // Move Hook Up
        new JoystickButton(m_operatorController, OIConstants.kClimberMoveHookUpButton)
@@ -162,7 +163,7 @@ private final WallSubsystem m_wallSubsystem = new WallSubsystem();
         m_wallSubsystem.moveWall(speed);
     }, m_wallSubsystem));
     }
-
+*/
 
    /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
