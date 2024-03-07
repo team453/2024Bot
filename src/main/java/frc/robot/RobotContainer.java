@@ -108,6 +108,9 @@ public class RobotContainer {
 
     new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton)
         .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed));
+
+         new JoystickButton(m_operatorController, 11)
+        .whileTrue(m_underBot.new ShootAmpCommand(-0.35, 0.2));
 }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

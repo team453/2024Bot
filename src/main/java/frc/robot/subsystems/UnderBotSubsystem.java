@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -97,23 +98,32 @@ public class EjectCommand extends Command {
 
 public class ShootCommand extends Command {
     private final double speed;
-    
+    Timer timer = new Timer();
     public ShootCommand(double speed) {
         this.speed = speed;
         // Add requirements to ensure this command has exclusive access to the IntakeSubsystem
         addRequirements(UnderBotSubsystem.this);
     }
 
+     @Override
+    public void execute() {
+         // Check if 3 seconds have passed since the command started
+         if (timer.get() >= 0.5) {
+            // 3 seconds after starting, run the intake motor
+            setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed);
+        }
+        else{
+            setIntakeMotor(0);
+        }
+    }
+
+
     @Override
     public void initialize() {
+        timer.start();
+        timer.reset();
         // Start the shooter motor at the specified speed
         setShooterMotor(speed);
-
-        // Create a sequence where the intake starts after a # second delay
-        new SequentialCommandGroup(
-            new WaitCommand(UnderBotSubsystemConstants.kShooterDelay), // Wait for seconds
-            new RunCommand(() -> setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed)) // Start the intake motor
-        ).schedule(); // Schedule this sequence to run
     }
 
     @Override
@@ -132,6 +142,54 @@ public class ShootCommand extends Command {
     }
 }
 
+
+public class ShootAmpCommand extends Command {
+    private final double speed1;
+    private final double speed2;
+    Timer timer = new Timer();
+    public ShootAmpCommand(double speed1, double speed2) {
+        this.speed1 = speed1;
+        this.speed2 = speed2;
+        // Add requirements to ensure this command has exclusive access to the IntakeSubsystem
+        addRequirements(UnderBotSubsystem.this);
+    }
+
+     @Override
+    public void execute() {
+         // Check if 3 seconds have passed since the command started
+         if (timer.get() >= 0.5) {
+            // 3 seconds after starting, run the intake motor
+            setIntakeMotor(speed2);
+        }
+        else{
+            setIntakeMotor(0);
+        }
+    }
+
+
+    @Override
+    public void initialize() {
+        timer.start();
+        timer.reset();
+        // Start the shooter motor at the specified speed
+        setShooterMotor(speed1);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        // Command end action: Stop the motors, whether the command ends normally or is interrupted
+        setShooterMotor(0);
+        setIntakeMotor(0);
+    }
+
+    private void setShooterMotor(double speed) {
+        UnderBotSubsystem.this.setShooterMotor(speed);
+    }
+
+    private void setIntakeMotor(double speed) {
+        UnderBotSubsystem.this.setIntakeMotor(speed);
+    }
+}
  // Inner class for thing
 public class SourceIntakeCommand extends Command {
     double speed;

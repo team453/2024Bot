@@ -183,7 +183,7 @@ public static final class OIConstants {
     //speeds
     public static final double kIntakeSpeed = 0.2;
     public static final double kOuttakeSpeed = -0.2;
-    public static final double kIntakeFeederSpeed = 0.15;
+    public static final double kIntakeFeederSpeed = 0.25;
 
     public static final double kHighShooterSpeed = -0.75;
     public static final double kLowShooterSpeed = -0.25;
