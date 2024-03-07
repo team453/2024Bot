@@ -26,6 +26,7 @@ import frc.robot.helpers.LimelightHelpers;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
+import frc.robot.subsystems.UnderBotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -48,11 +49,14 @@ public class RobotContainer {
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
   private final LimeLight m_limeLight = new LimeLight();
+  private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
+    private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
   //private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
   
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+    Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -105,7 +109,22 @@ m_drivetrain.setDefaultCommand(
             true, true),
         m_drivetrain));
 
-    //new JoystickButton(m_driverController, 7).whileTrue(m_AlignWithTag);
+    new JoystickButton(m_driverController, OIConstants.kDriverAlignButton).whileTrue(m_AlignWithTag);
+
+    //underbot stuff
+    
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotIntakeButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.IntakeCommand())
+    .onFalse(m_underBot.StopUnderbot());
+
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotEjectButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.EjectCommand());
+
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterHighButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.HighSpeedShootCommand());
+
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton) // Binding for trigger on m_operatorController joystick
+    .whileTrue(m_underBot.LowSpeedShootCommand());
   }
 
    /**
