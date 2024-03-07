@@ -19,10 +19,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignWithTag;
 import frc.robot.helpers.LimelightHelpers;
+import frc.robot.subsystems.ClimberSubsystem.MoveHookCommand;
+import frc.robot.subsystems.ClimberSubsystem.MoveWinchCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -52,6 +56,7 @@ public class RobotContainer {
   private final LimeLight m_limeLight = new LimeLight();
   private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
     private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
+    private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
     // The robot's subsystems
 private final WallSubsystem m_wallSubsystem = new WallSubsystem();
 
@@ -154,6 +159,22 @@ m_drivetrain.setDefaultCommand(
             m_wallSubsystem.moveWall(speed);
         }, m_wallSubsystem));
 
+        //hook stuff
+         // Move Hook Up
+        new JoystickButton(m_operatorController, OIConstants.kClimberMoveHookUpButton)
+            .whileTrue(m_AlignWithTag)(m_climberSubsystem.new MoveHookCommand(ClimberConstants.kHookMoveUpSpeed));
+
+        // Move Hook Down
+        new JoystickButton(m_operatorController, OIConstants.kClimberMoveHookDownButton)
+            .whileTrue(m_climberSubsystem.new MoveHookCommand(ClimberConstants.kHookMoveDownSpeed));
+
+        // Pull Winch
+        new JoystickButton(m_operatorController, OIConstants.kClimberPullWinchButton)
+            .whileTrue(m_climberSubsystem.new MoveWinchCommand(ClimberConstants.kWinchPullInSpeed));
+
+        // Release Winch
+        new JoystickButton(m_operatorController, OIConstants.kClimberReleaseWinchButton)
+            .whileTrue(m_climberSubsystem.new MoveWinchCommand(ClimberConstants.kWinchReleaseSpeed));
   }
 
    /**

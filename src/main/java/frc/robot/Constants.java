@@ -47,11 +47,19 @@ public final class Constants {
     public static final int kDriverDisableFieldPositionButton = 1;
 
        //operator buttons
+       //wall
        public static final int kEnableWallButton = 1;
+       //under bot
        public static final int kUnderbotIntakeButton = 5;
        public static final int kUnderbotEjectButton = 6;
        public static final int kUnderbotShooterHighButton = 3;
        public static final int kUnderbotShooterLowButton = 4;
+        // Climber buttons
+    public static final int kClimberMoveHookUpButton = 5; // Example button number
+    public static final int kClimberMoveHookDownButton = 3; // Example button number
+    public static final int kClimberPullWinchButton = 6; // Example button number
+    public static final int kClimberReleaseWinchButton = 4; // Example button number
+
   }
 
   public static final class UnderBotSubsystemConstants {
@@ -78,6 +86,22 @@ public final class Constants {
   public static final class WallSubsystemConstants {
     public static final int kWallMotorCanId = 13;
   }
+
+
+public final class ClimberConstants {
+    // Motor Controller CAN IDs
+    public static final int kExtenderMotorCanId = 17; // Example ID for the extender motor, replace with your actual CAN ID
+    public static final int kWinchMotorCanId = 18; // Example ID for the winch motor, replace with your actual CAN ID
+
+    // Speed constants for climber operations
+    public static final double kHookMoveUpSpeed = 0.6; // Speed for moving the hook up
+    public static final double kHookMoveDownSpeed = -0.6; // Speed for moving the hook down
+    public static final double kWinchPullInSpeed = 0.75; // Speed for pulling in the winch
+    public static final double kWinchReleaseSpeed = -0.75; // Speed for releasing the winch
+
+ }
+
+
 
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
