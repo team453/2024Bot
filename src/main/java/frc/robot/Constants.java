@@ -40,6 +40,7 @@ public final class Constants {
 
     //driver buttons
     public static final int kDriverAlignButton = 7;
+    public static final int kDriverDisableFieldPositionButton = 1;
 
        //operator buttons
        public static final int kUnderbotIntakeButton = 5;

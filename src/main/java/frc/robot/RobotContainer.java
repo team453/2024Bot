@@ -51,8 +51,10 @@ public class RobotContainer {
   private final LimeLight m_limeLight = new LimeLight();
   private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
     private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
-  //private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
-  
+
+
+  // Add a boolean variable to track field position state
+  private boolean isFieldPositionEnabled = true; // Initialize to true by default
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
@@ -66,18 +68,25 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", autoChooser);
     // Configure the button bindings
     configureButtonBindings();
+    // Update the SmartDashboard with the initial field position state
+    SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
 
   // Configure default commands
 m_drivetrain.setDefaultCommand(
     // The joystick's Y axis controls forward/backward movement,
     // the X axis controls left/right movement, and
     // Z controls turning.
-    new RunCommand(
-        () -> m_drivetrain.drive(
-            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier, // Forward/backward
-            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Left/right
-            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
-            false, true),
+   new RunCommand(() -> {
+          // Toggle the field position state when button 1 is pressed
+          isFieldPositionEnabled = true;
+          // Update the SmartDashboard with the new state
+          SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
+          m_drivetrain.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier,
+            true, true);
+        }, 
         m_drivetrain));
   }
 
@@ -99,16 +108,19 @@ m_drivetrain.setDefaultCommand(
              m_drivetrain));
 
                    //When holding the tri gger, use the driverDriveSpeed
-    new JoystickButton(m_driverController, 1) // Create a new JoystickButton binding for button 9 on m_driver joystick
-    .whileTrue(
-        new RunCommand(
-        () -> m_drivetrain.drive(
-            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Forward/backward
-            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Left/right
-            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband)* OIConstants.kSpeedMultiplier, // Turning
-            true, true),
+    new JoystickButton(m_driverController, OIConstants.kDriverDisableFieldPositionButton) // Create a new JoystickButton binding for button 9 on m_driver joystick
+    .whileTrue(new RunCommand(() -> {
+          // Toggle the field position state when button 1 is pressed
+          isFieldPositionEnabled = false;
+          // Update the SmartDashboard with the new state
+          SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
+          m_drivetrain.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * OIConstants.kSpeedMultiplier,
+            false, true);
+        }, 
         m_drivetrain));
-
     new JoystickButton(m_driverController, OIConstants.kDriverAlignButton).whileTrue(m_AlignWithTag);
 
     //underbot stuff
