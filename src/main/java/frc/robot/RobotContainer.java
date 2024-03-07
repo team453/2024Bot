@@ -27,6 +27,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.UnderBotSubsystem;
+import frc.robot.subsystems.WallSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -51,6 +52,9 @@ public class RobotContainer {
   private final LimeLight m_limeLight = new LimeLight();
   private final AlignWithTag m_AlignWithTag = new AlignWithTag(m_drivetrain, m_limeLight);
     private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
+    // The robot's subsystems
+private final WallSubsystem m_wallSubsystem = new WallSubsystem();
+
 
 
   // Add a boolean variable to track field position state
@@ -137,6 +141,19 @@ m_drivetrain.setDefaultCommand(
 
     new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton) // Binding for trigger on m_operatorController joystick
     .whileTrue(m_underBot.LowSpeedShootCommand());
+
+   //wall stuff
+    // Wall movement button binding
+    new JoystickButton(m_operatorController, OIConstants.kEnableWallButton)
+        .whileTrue(new RunCommand(() -> {
+            double speed = -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * OIConstants.kWallSpeedMultiplier;
+            if (OIConstants.kUsingWallSpeedAdjustment) {
+                // Apply square root function for smoother control
+                speed = Math.copySign(Math.sqrt(Math.abs(speed)), speed);
+            }
+            m_wallSubsystem.moveWall(speed);
+        }, m_wallSubsystem));
+
   }
 
    /**

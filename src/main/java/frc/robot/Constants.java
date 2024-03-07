@@ -33,8 +33,12 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 1;
     public static final int kOperatorControllerPort = 0; 
+
+    //user adjustable constants
     public static final double kDriveDeadband = 0.05;
     public static final double kSpeedMultiplier = 0.5;
+    public static final double kWallSpeedMultiplier = 0.5;
+    public static final boolean kUsingWallSpeedAdjustment = true;
 
     //buttons
 
@@ -43,6 +47,7 @@ public final class Constants {
     public static final int kDriverDisableFieldPositionButton = 1;
 
        //operator buttons
+       public static final int kEnableWallButton = 1;
        public static final int kUnderbotIntakeButton = 5;
        public static final int kUnderbotEjectButton = 6;
        public static final int kUnderbotShooterHighButton = 3;
@@ -68,6 +73,10 @@ public final class Constants {
 
     //timings
     public static final double kShooterDelay = 0.5;
+  }
+
+  public static final class WallSubsystemConstants {
+    public static final int kWallMotorCanId = 13;
   }
 
   public static final class DriveConstants {
