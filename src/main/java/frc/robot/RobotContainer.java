@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.UnderBotSubsystemConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
+import frc.robot.subsystems.UnderBotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -29,7 +31,9 @@ public class RobotContainer {
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
   private final SendableChooser<Double> speedChooser = new SendableChooser<>();
+  private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
   
   // Add a boolean variable to track field position state
   private boolean isFieldPositionEnabled = false; // Initialize to false by default
@@ -37,6 +41,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
     configureDefaultDriveCommand();
+    configureUnderBotButtonBindings();
    updateShuffleboard();
   }
 
@@ -89,6 +94,21 @@ public class RobotContainer {
         }, 
         m_drivetrain));
   }
+
+  private void configureUnderBotButtonBindings() {
+    // UnderBot subsystem bindings
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotIntakeButton)
+        .whileTrue(m_underBot.new IntakeCommand());
+
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotEjectButton)
+        .whileTrue(m_underBot.new EjectCommand());
+
+   new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterHighButton)
+       .whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
+
+    new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton)
+        .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed));
+}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
