@@ -6,10 +6,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.UnderBotSubsystemConstants;
+
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class UnderBotSubsystem extends SubsystemBase {
 
@@ -93,9 +95,9 @@ public class EjectCommand extends Command {
     }
 }
 
- // Inner class for shoot
 public class ShootCommand extends Command {
-    double speed;
+    private final double speed;
+    
     public ShootCommand(double speed) {
         this.speed = speed;
         // Add requirements to ensure this command has exclusive access to the IntakeSubsystem
@@ -103,19 +105,25 @@ public class ShootCommand extends Command {
     }
 
     @Override
-    public void execute() {
-       setShooterMotor(speed);
-       setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed);
+    public void initialize() {
+        // Start the shooter motor at the specified speed
+        setShooterMotor(speed);
+
+        // Create a sequence where the intake starts after a # second delay
+        new SequentialCommandGroup(
+            new WaitCommand(UnderBotSubsystemConstants.kShooterDelay), // Wait for seconds
+            new RunCommand(() -> setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed)) // Start the intake motor
+        ).schedule(); // Schedule this sequence to run
     }
 
     @Override
     public void end(boolean interrupted) {
-        // Command end action: Stop the motor, whether the command ends normally or is interrupted
+        // Command end action: Stop the motors, whether the command ends normally or is interrupted
         setShooterMotor(0);
         setIntakeMotor(0);
     }
 
-     private void setShooterMotor(double speed) {
+    private void setShooterMotor(double speed) {
         UnderBotSubsystem.this.setShooterMotor(speed);
     }
 

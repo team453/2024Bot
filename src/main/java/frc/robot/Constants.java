@@ -194,5 +194,8 @@ public static final class OIConstants {
 
   public static final class WallSubsystemConstants {
     public static final int kWallMotorCanId = 13;
+
+    public static double kBottomLimit = 0;
+    public static double kTopLimit = 1000;
   }
 }
