@@ -18,17 +18,12 @@ public class UnderBotSubsystem extends SubsystemBase {
 
     private final CANSparkMax m_intake;
     private final CANSparkMax m_shooter;
-
-    //beam break sensor
-    private final AnalogInput m_beamBreak;    
+  
   /** Creates a new ExampleSubsystem. */
   public UnderBotSubsystem() {
-    m_beamBreak = new AnalogInput(UnderBotSubsystemConstants.kBeamBreakAnalogPort);
     m_intake = new CANSparkMax(UnderBotSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
     m_shooter = new CANSparkMax(UnderBotSubsystemConstants.kShooterMotorCanId, MotorType.kBrushless);
-    // Sets the AnalogInput to 8-bit averaging.  64 samples will be averaged together.
-    // The update rate will decrease by a factor of 64.
-    m_beamBreak.setAverageBits(8);
+  
   }
 
   // Inner class for operating the intake
@@ -40,12 +35,7 @@ public class IntakeCommand extends Command {
 
     @Override
     public void execute() {
-        // Command execution: Run the motor unless the beam break is tripped
-        if (!isBeamBroken()) {
             setIntakeMotor(UnderBotSubsystemConstants.kIntakeSpeed);
-        } else {
-            setIntakeMotor(0);
-        }
     }
 
     @Override
@@ -54,9 +44,6 @@ public class IntakeCommand extends Command {
         setIntakeMotor(0);
     }
 
-    private boolean isBeamBroken() {
-        return UnderBotSubsystem.this.isBeamBroken();
-    }
 
     private void setIntakeMotor(double speed) {
         UnderBotSubsystem.this.setIntakeMotor(speed);
@@ -73,11 +60,9 @@ public class EjectCommand extends Command {
     @Override
     public void execute() {
         // Command execution: Run the motor unless the beam break is tripped
-        if (!isBeamBroken()) {
+       
             setIntakeMotor(UnderBotSubsystemConstants.kOuttakeSpeed);
-        } else {
-            setIntakeMotor(0);
-        }
+       
     }
 
     @Override
@@ -86,10 +71,7 @@ public class EjectCommand extends Command {
         setIntakeMotor(0);
     }
 
-    private boolean isBeamBroken() {
-
-        return UnderBotSubsystem.this.isBeamBroken();
-    }
+   
 
     private void setIntakeMotor(double speed) {
         UnderBotSubsystem.this.setIntakeMotor(speed);
@@ -279,10 +261,6 @@ public Command StopUnderbot()
 }, this); 
 }
 
-
-  public double getBeamBreak() {
-    return m_beamBreak.getValue();
-  }
   
   public boolean isBeamBroken() {
            return false; //REMOVE ME
@@ -291,13 +269,79 @@ public Command StopUnderbot()
 
   @Override
   public void periodic() {
-        // This method will be called once per scheduler run
-    SmartDashboard.putNumber("UnderBot Beam Break Sensor", m_beamBreak.getValue());
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+
+  //auto stuff
+  public class StartShooterCommand extends Command {
+    private final double speed;
+
+    public StartShooterCommand(double speed) {
+        this.speed = speed;
+    }
+
+    @Override
+    public void initialize() {
+       UnderBotSubsystem.this.setShooterMotor(speed);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true; // This command completes immediately after starting the motor
+    }
+}
+
+public class StartFeederCommand extends Command {
+    
+
+    public StartFeederCommand() {
+    }
+
+    @Override
+    public void initialize() {
+        UnderBotSubsystem.this.setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true; // This command completes immediately after starting the motor
+    }
+}
+
+public class StopMotorsCommand extends Command {
+
+    public StopMotorsCommand() {
+    }
+
+    @Override
+    public void initialize() {
+    UnderBotSubsystem.this.setShooterMotor(0);
+     UnderBotSubsystem.this.setIntakeMotor(0);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true; // This command completes immediately after stopping the motors
+    }
+}
+
+// Then, to sequence them:
+public class SequentialShootCommand extends SequentialCommandGroup {
+    public SequentialShootCommand(double shooterSpeed) {
+        addCommands(
+            new StartShooterCommand(shooterSpeed),
+            new WaitCommand(0.5),
+            new StartFeederCommand(),
+             new WaitCommand(3.0),
+            new StopMotorsCommand()
+        );
+    }
+}
+
 }
 

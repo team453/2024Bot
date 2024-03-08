@@ -41,11 +41,43 @@ public static final class OIConstants {
   public static final int kUnderbotShooterHighButton = 3;
   public static final int kUnderbotShooterLowButton = 4;
 
-    public static final double kLowSpeedMultiplier = 0.10;
-    public static final double kMediumSpeedMultiplier = 0.25;
-    public static final double kHighSpeedMultiplier = 0.35;
+  //wall
+  public static final int kWallMoveUpButton = 7;
+  public static final int kWallMoveDownButton = 8;
+  public static final int kWallHomeButton = 9;
+    public static final double kLowSpeedMultiplier = 0.8 ;
+    public static final double kMediumSpeedMultiplier = 0.9;
+    public static final double kHighSpeedMultiplier = 1;
   }
 
+  public static final class UnderBotSubsystemConstants {
+    //ports
+    public static final int kIntakeMotorCanId = 12;
+    public static final int kShooterMotorCanId = 11;
+    public static final int kBeamBreakAnalogPort = 0;
+
+    //beam break sensor
+    public static final double kBeamBreakThreshold = 1600;
+
+    //speeds
+    public static final double kIntakeSpeed = 0.2;
+    public static final double kOuttakeSpeed = -0.2;
+    public static final double kIntakeFeederSpeed = 0.25;
+
+    public static final double kHighShooterSpeed = -0.75;
+    public static final double kLowShooterSpeed = -0.25;
+
+    //timings
+    public static final double kShooterDelay = 0.5;
+  }
+
+  
+  public static final class WallSubsystemConstants {
+    public static final int kWallMotorCanId = 20;
+
+    public static double kBottomLimit = 3;
+    public static double kTopLimit = 75;
+  }
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
@@ -174,33 +206,7 @@ public static final class OIConstants {
     public static final double kAutoCorrectStrafe = 0.25;
    }
 
-   public static final class UnderBotSubsystemConstants {
-    //ports
-    public static final int kIntakeMotorCanId = 12;
-    public static final int kShooterMotorCanId = 11;
-    public static final int kBeamBreakAnalogPort = 0;
 
-    //beam break sensor
-    public static final double kBeamBreakThreshold = 1600;
-
-    //speeds
-    public static final double kIntakeSpeed = 0.2;
-    public static final double kOuttakeSpeed = -0.2;
-    public static final double kIntakeFeederSpeed = 0.25;
-
-    public static final double kHighShooterSpeed = -0.75;
-    public static final double kLowShooterSpeed = -0.25;
-
-    //timings
-    public static final double kShooterDelay = 0.5;
-  }
-
-  public static final class WallSubsystemConstants {
-    public static final int kWallMotorCanId = 13;
-
-    public static double kBottomLimit = 0;
-    public static double kTopLimit = 1000;
-  }
 
   public static final class Swerve
   {

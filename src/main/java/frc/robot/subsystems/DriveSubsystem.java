@@ -79,6 +79,10 @@ public class DriveSubsystem extends SubsystemBase {
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    //set the initial pose of the robot
+    m_gyro.setFusedHeading(0.0);
+
+    
     AutoBuilder.configureHolonomic(
       this::getPose, 
       this::resetOdometry, 

@@ -21,6 +21,7 @@ import frc.robot.Constants.UnderBotSubsystemConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.UnderBotSubsystem;
+import frc.robot.subsystems.WallSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -28,23 +29,31 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 public class RobotContainer {
-  private final DriveSubsystem m_drivetrain = new DriveSubsystem();
-  private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
+  private final DriveSubsystem m_drivetrain;
+  //private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
   Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
   private final SendableChooser<Double> speedChooser = new SendableChooser<>();
   private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
+  private final WallSubsystem m_WallSubsystem = new WallSubsystem();
   
   // Add a boolean variable to track field position state
   private boolean isFieldPositionEnabled = false; // Initialize to false by default
 
   public RobotContainer() {
+    m_drivetrain = new DriveSubsystem();
+
+     // Register Named Commands for PathPlanner
+    NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed));
+    
     configureButtonBindings();
     configureDefaultDriveCommand();
     configureUnderBotButtonBindings();
+    configureWallButtonBindings();
    updateShuffleboard();
   }
 
@@ -92,7 +101,7 @@ public class RobotContainer {
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
-            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (speedMultiplier/2),
             true, isFieldPositionEnabled);
         }, 
         m_drivetrain));
@@ -115,53 +124,35 @@ public class RobotContainer {
          new JoystickButton(m_operatorController, 11)
         .whileTrue(m_underBot.new ShootAmpCommand(-0.35, 0.2));
 }
+
+private void configureWallButtonBindings()
+{
+     new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton)
+        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.15));
+
+          new JoystickButton(m_operatorController, OIConstants.kWallMoveDownButton)
+        .whileTrue(m_WallSubsystem.new MoveWallCommand(-0.15));
+
+         new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton+2)
+        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.15));
+
+          new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton+2)
+        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(0.15));
+
+         new JoystickButton(m_operatorController, OIConstants.kWallMoveDownButton+2)
+        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(-0.15));
+}
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    /*TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-         m_poseEstimator::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-         m_drivetrain::setModuleStates,
-        m_drivetrain);
-
-    // Reset odometry to the starting pose of the trajectory.
-     m_poseEstimator.setCurrentPose(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() ->  m_drivetrain.drive(0, 0, 0, false, false));*/
+   //return new PathPlannerAuto("Example Auto");
 
     PathPlannerPath path = PathPlannerPath.fromPathFile("straightPath");
-
+//
     return AutoBuilder.followPath(path);
+    //
   }
 }

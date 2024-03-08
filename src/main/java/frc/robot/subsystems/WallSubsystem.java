@@ -13,13 +13,16 @@ public class WallSubsystem extends SubsystemBase {
 
     public WallSubsystem() {
         m_wallMotor = new TalonFX(WallSubsystemConstants.kWallMotorCanId);
-
+        
+        m_wallMotor.setPosition(0);
         // Set neutral mode to brake to hold the wall position when motor power is not applied
         m_wallMotor.setNeutralMode(NeutralModeValue.Brake);
 
         // Set the safety enabled to ensure the motor stops if not regularly updated
         m_wallMotor.setSafetyEnabled(true);
-        m_wallMotor.setExpiration(0.1); // 100ms expiration time for the safety feature
+        m_wallMotor.setExpiration(0.1); // 100ms expiration time for the safety feature'
+
+        invertDirection(true);
     }
 
     
@@ -63,6 +66,7 @@ public class WallSubsystem extends SubsystemBase {
         if(speed < 0)
         {
             if(rotorPos > WallSubsystemConstants.kBottomLimit)
+          
             {
                  setWallMotor(speed);
             }
@@ -75,8 +79,9 @@ public class WallSubsystem extends SubsystemBase {
          //if not at limit it can move up
         if(speed > 0)
         {
-            if(rotorPos > WallSubsystemConstants.kTopLimit)
-            {
+         if(rotorPos > WallSubsystemConstants.kTopLimit)
+     
+         {
                  setWallMotor(speed);
             }
             else
@@ -84,6 +89,30 @@ public class WallSubsystem extends SubsystemBase {
                 setWallMotor(0);
             }
         }
+    }
+    }
+    // Inner class for operating the wall
+    public class MoveWallOverideCommand extends Command {
+    private final double speed;
+
+    public MoveWallOverideCommand(double speed) {
+        this.speed = speed;
+        // Add requirements to ensure this command has exclusive access to the WallSubsystem
+        addRequirements(WallSubsystem.this);
+    }
+
+    @Override
+    public void execute() {
+      
+        // Acquire a refreshed TalonFX rotor position signal
+        var rotorPosSignal = m_wallMotor.getRotorPosition();
+
+        // Retrieve position value that we just refreshed, units are rotations
+        var rotorPos = rotorPosSignal.getValue();
+        SmartDashboard.putNumber("Wall Rotation", rotorPos);
+
+        setWallMotor(speed);
+            
     }
 
     @Override
@@ -98,5 +127,7 @@ public class WallSubsystem extends SubsystemBase {
         WallSubsystem.this.setWallMotor(speed); // Set the wall motor's speed
     }
 }
+    }
 
-}
+
+
