@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -197,5 +200,23 @@ public static final class OIConstants {
 
     public static double kBottomLimit = 0;
     public static double kTopLimit = 1000;
+  }
+
+  public static final class Swerve
+  {
+    public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
+    public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
+    public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
+    public static final Translation2d brModuleOffset = new Translation2d(-0.4, -0.4);
+
+    public static final double maxModuleSpeed = 2; // M/S
+
+    public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
+      new PIDConstants(ModuleConstants.kDrivingP, ModuleConstants.kDrivingI, ModuleConstants.kDrivingD), // Translation constants 
+      new PIDConstants(ModuleConstants.kTurningP, ModuleConstants.kTurningI, ModuleConstants.kTurningD), // Rotation constants 
+      maxModuleSpeed, 
+      flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module) 
+      new ReplanningConfig()
+    );
   }
 }

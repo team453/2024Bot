@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 public class RobotContainer {
   private final DriveSubsystem m_drivetrain = new DriveSubsystem();
   private final PoseEstimatorSubsystem m_poseEstimator = new PoseEstimatorSubsystem(m_drivetrain);
@@ -119,7 +122,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
+    /*TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
@@ -155,6 +158,10 @@ public class RobotContainer {
      m_poseEstimator.setCurrentPose(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() ->  m_drivetrain.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() ->  m_drivetrain.drive(0, 0, 0, false, false));*/
+
+    PathPlannerPath path = PathPlannerPath.fromPathFile("straightPath");
+
+    return AutoBuilder.followPath(path);
   }
 }
