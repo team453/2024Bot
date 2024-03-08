@@ -1,7 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+/*import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,28 +9,29 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;*/
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
+//import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
+//import frc.robot.Constants.AutoConstants;
+//import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.UnderBotSubsystemConstants;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.PoseEstimatorSubsystem;
+//import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.UnderBotSubsystem;
 import frc.robot.subsystems.WallSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+//import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
+//import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+//import com.pathplanner.lib.path.PathPlannerPath;
 
 public class RobotContainer {
   private final DriveSubsystem m_drivetrain;
@@ -40,7 +41,7 @@ public class RobotContainer {
   private final SendableChooser<Double> speedChooser = new SendableChooser<>();
   private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
   private final WallSubsystem m_WallSubsystem = new WallSubsystem();
-  
+  private final SendableChooser<Command> autoChooser;
   // Add a boolean variable to track field position state
   private boolean isFieldPositionEnabled = false; // Initialize to false by default
 
@@ -49,7 +50,11 @@ public class RobotContainer {
 
      // Register Named Commands for PathPlanner
     NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed));
-    
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    autoChooser.setDefaultOption("Shooter Routine", new PathPlannerAuto("basicShoot"));
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     configureButtonBindings();
     configureDefaultDriveCommand();
     configureUnderBotButtonBindings();
@@ -150,9 +155,7 @@ private void configureWallButtonBindings()
   public Command getAutonomousCommand() {
    //return new PathPlannerAuto("Example Auto");
 
-    PathPlannerPath path = PathPlannerPath.fromPathFile("straightPath");
-//
-    return AutoBuilder.followPath(path);
-    //
+    
+    return autoChooser.getSelected();
   }
 }

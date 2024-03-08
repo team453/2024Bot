@@ -24,6 +24,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "shootCommand"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 3.0
@@ -33,12 +39,6 @@
           "type": "path",
           "data": {
             "pathName": "middleSteal"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
           }
         }
       ]
