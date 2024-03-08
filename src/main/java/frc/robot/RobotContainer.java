@@ -53,7 +53,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("Shooter Routine", new PathPlannerAuto("basicShoot"));
-
+    autoChooser.addOption("Qual 13", new PathPlannerAuto("Match13Path"));
     SmartDashboard.putData("Auto Chooser", autoChooser);
     configureButtonBindings();
     configureDefaultDriveCommand();
