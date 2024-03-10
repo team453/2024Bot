@@ -23,7 +23,6 @@ import edu.wpi.first.math.util.Units;
  * constants. This class should not be used for any other purpose. All constants
  * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
- *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the
@@ -64,7 +63,7 @@ public static final class OIConstants {
     public static final double kOuttakeSpeed = -0.2;
     public static final double kIntakeFeederSpeed = 0.25;
 
-    public static final double kHighShooterSpeed = -0.75;
+    public static final double kHighShooterSpeed = -0.90;
     public static final double kLowShooterSpeed = -0.25;
 
     //timings

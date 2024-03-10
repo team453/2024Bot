@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 5.5040931765173085
+      "x": 1.36086297850199,
+      "y": 5.492382339971527
     },
     "rotation": 180.0
   },
@@ -18,12 +18,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "shootCommand"
@@ -33,12 +27,6 @@
           "type": "wait",
           "data": {
             "waitTime": 3.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "middleSteal"
           }
         }
       ]

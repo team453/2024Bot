@@ -313,6 +313,23 @@ public class StartFeederCommand extends Command {
     }
 }
 
+public class StartIntakeCommand extends Command {
+    
+
+    public StartIntakeCommand() {
+    }
+
+    @Override
+    public void initialize() {
+        UnderBotSubsystem.this.setIntakeMotor(UnderBotSubsystemConstants.kIntakeSpeed);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true; // This command completes immediately after starting the motor
+    }
+}
+
 public class StopMotorsCommand extends Command {
 
     public StopMotorsCommand() {
@@ -343,5 +360,15 @@ public class SequentialShootCommand extends SequentialCommandGroup {
     }
 }
 
+public class SequentialIntakeCommand extends SequentialCommandGroup
+{
+      public SequentialIntakeCommand() {
+        addCommands(
+            new StartIntakeCommand(),
+            new WaitCommand(2),
+            new StopMotorsCommand()
+        );
+    }
+}
 }
 

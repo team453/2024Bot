@@ -20,6 +20,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.helpers.LimelightHelpers;
 import frc.utils.SwerveUtils;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -82,7 +83,7 @@ public class DriveSubsystem extends SubsystemBase {
     //set the initial pose of the robot
     m_gyro.setFusedHeading(0.0);
 
-    
+
     AutoBuilder.configureHolonomic(
       this::getPose, 
       this::resetOdometry, 
@@ -98,6 +99,11 @@ public class DriveSubsystem extends SubsystemBase {
       }, this);
   }
 
+  public void resetOdometry()
+  {
+    m_gyro.setFusedHeading(0);
+    
+  }
   @Override
   public void periodic() {
     // Update the odometry in the periodic block

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 5.5040931765173085
+      "x": 1.3842846515935527,
+      "y": 5.515804013063089
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -18,9 +18,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "rotateAtLine"
           }
         },
         {
@@ -36,9 +36,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "middleSteal"
+            "name": "intakeCommand"
           }
         }
       ]

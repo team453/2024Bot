@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 /*import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -43,13 +44,14 @@ public class RobotContainer {
   private final WallSubsystem m_WallSubsystem = new WallSubsystem();
   private final SendableChooser<Command> autoChooser;
   // Add a boolean variable to track field position state
-  private boolean isFieldPositionEnabled = false; // Initialize to false by default
+  private boolean isFieldPositionEnabled = true; // Initialize to false by default
 
   public RobotContainer() {
     m_drivetrain = new DriveSubsystem();
 
      // Register Named Commands for PathPlanner
-    NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed));
+    NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(-0.75));
+    NamedCommands.registerCommand("intakeCommand", m_underBot.new SequentialIntakeCommand());
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("Shooter Routine", new PathPlannerAuto("basicShoot"));
@@ -77,20 +79,23 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
-           isFieldPositionEnabled = false;
+           isFieldPositionEnabled = true;
               // Update the SmartDashboard with the current state after changing it
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
-            false, isFieldPositionEnabled);
+            true, isFieldPositionEnabled);
         }, 
         m_drivetrain)
     );
   }
 
   private void configureButtonBindings() {
+    new JoystickButton(m_driverController, 12).onTrue(
+      new RunCommand(
+            () -> m_drivetrain.resetOdometry()));
     new JoystickButton(m_driverController, 9)
         .whileTrue(new RunCommand(
             () -> m_drivetrain.setX(),
@@ -100,14 +105,14 @@ public class RobotContainer {
     .whileTrue(new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
           // Toggle the field position state when button 1 is pressed
-          isFieldPositionEnabled = true;
+          isFieldPositionEnabled = false;
           // Update the SmartDashboard with the new state
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (speedMultiplier/2),
-            true, isFieldPositionEnabled);
+            false, isFieldPositionEnabled);
         }, 
         m_drivetrain));
   }
@@ -133,19 +138,19 @@ public class RobotContainer {
 private void configureWallButtonBindings()
 {
      new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton)
-        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.15));
+        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.25));
 
           new JoystickButton(m_operatorController, OIConstants.kWallMoveDownButton)
-        .whileTrue(m_WallSubsystem.new MoveWallCommand(-0.15));
+        .whileTrue(m_WallSubsystem.new MoveWallCommand(-0.25));
 
          new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton+2)
-        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.15));
+        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.25));
 
           new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton+2)
-        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(0.15));
+        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(0.25));
 
          new JoystickButton(m_operatorController, OIConstants.kWallMoveDownButton+2)
-        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(-0.15));
+        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(-0.25));
 }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
