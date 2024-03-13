@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -20,7 +23,6 @@ import edu.wpi.first.math.util.Units;
  * constants. This class should not be used for any other purpose. All constants
  * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
- *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the
@@ -28,6 +30,67 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
+public static final class OIConstants {
+    public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
+    public static final double kDriveDeadband = 0.1;
+  //under bot
+  public static final int kUnderbotIntakeButton = 5;
+  public static final int kUnderbotEjectButton = 6;
+  public static final int kUnderbotShooterHighButton = 3;
+  public static final int kUnderbotShooterLowButton = 4;
+
+  //wall
+  public static final int kWallMoveUpButton = 7;
+  public static final int kWallMoveDownButton = 8;
+  public static final int kWallHomeButton = 9;
+    public static final double kLowSpeedMultiplier = 0.8 ;
+    public static final double kMediumSpeedMultiplier = 0.9;
+    public static final double kHighSpeedMultiplier = 1;
+  }
+
+  public static final class UnderBotSubsystemConstants {
+    //ports
+    public static final int kIntakeMotorCanId = 12;
+    public static final int kShooterMotorCanId = 11;
+    public static final int kBeamBreakAnalogPort = 0;
+
+    //beam break sensor
+    public static final double kBeamBreakThreshold = 1600;
+
+    //speeds
+    public static final double kIntakeSpeed = 0.2;
+    public static final double kOuttakeSpeed = -0.2;
+    public static final double kIntakeFeederSpeed = 0.25;
+
+    public static final double kHighShooterSpeed = -0.90;
+    public static final double kLowShooterSpeed = -0.25;
+
+    //timings
+    public static final double kShooterDelay = 0.5;
+  }
+
+  
+  public static final class WallSubsystemConstants {
+    public static final int kWallMotorCanId = 20;
+
+    public static double kBottomLimit = 3;
+    public static double kTopLimit = 75;
+  }
+  public static final class AutoConstants {
+    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+
+    public static final double kPXController = 1;
+    public static final double kPYController = 1;
+    public static final double kPThetaController = 1;
+
+    // Constraint for the motion profiled robot angle controller
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -57,16 +120,16 @@ public final class Constants {
 
     // SPARK MAX CAN IDs
 
-    public static final int kFrontRightDrivingCanId = 1;
-    public static final int kFrontLeftDrivingCanId = 2;
-    public static final int kRearLeftDrivingCanId = 3;
-    public static final int kRearRightDrivingCanId = 4;
+    public static final int kFrontRightDrivingCanId = 5;
+    public static final int kFrontLeftDrivingCanId = 7;
+    public static final int kRearLeftDrivingCanId = 1;
+    public static final int kRearRightDrivingCanId = 3;
 
 
-    public static final int kFrontRightTurningCanId = 5;
-    public static final int kFrontLeftTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 7;
-    public static final int kRearRightTurningCanId = 8;
+    public static final int kFrontRightTurningCanId = 4;
+    public static final int kFrontLeftTurningCanId = 2;
+    public static final int kRearLeftTurningCanId = 8;
+    public static final int kRearRightTurningCanId = 6;
 
     public static final boolean kGyroReversed = false;
   }
@@ -122,26 +185,6 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
-  public static final class OIConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
-    public static final double kSpeedMultiplier = 0.15;
-  }
-
-  public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-
-    public static final double kPXController = 1;
-    public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
-
-    // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-  }
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
@@ -161,4 +204,24 @@ public final class Constants {
     public static final double kAutoCorrectTurn = 0.25;
     public static final double kAutoCorrectStrafe = 0.25;
    }
+
+
+
+  public static final class Swerve
+  {
+    public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
+    public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
+    public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
+    public static final Translation2d brModuleOffset = new Translation2d(-0.4, -0.4);
+
+    public static final double maxModuleSpeed = 2; // M/S
+
+    public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
+      new PIDConstants(ModuleConstants.kDrivingP, ModuleConstants.kDrivingI, ModuleConstants.kDrivingD), // Translation constants 
+      new PIDConstants(ModuleConstants.kTurningP, ModuleConstants.kTurningI, ModuleConstants.kTurningD), // Rotation constants 
+      maxModuleSpeed, 
+      flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module) 
+      new ReplanningConfig()
+    );
+  }
 }
