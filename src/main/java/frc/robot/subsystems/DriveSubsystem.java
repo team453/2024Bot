@@ -99,6 +99,11 @@ public class DriveSubsystem extends SubsystemBase {
       }, this);
   }
 
+  public void flipGyro()
+  {
+    m_gyro.setFusedHeading(-getHeading());
+  }
+
   public void resetOdometry()
   {
     m_gyro.setFusedHeading(0);

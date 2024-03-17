@@ -5,9 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.DriveSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +21,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -89,6 +93,8 @@ public class Robot extends TimedRobot {
     }
   }
 
+  
+
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {}
@@ -97,9 +103,26 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+
+    if(getAlliance())
+    {
+      m_driveSubsystem.flipGyro();
+    }
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+
+  //TRUE if we're on red alliance, FALSE if we're on blue alliance (probably??)
+  public boolean getAlliance()
+  {
+    var alliance = DriverStation.getAlliance();
+        if(alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+  }
 }
