@@ -91,6 +91,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    if(getAlliance())
+    {
+      m_driveSubsystem.flipGyro();
+    }
   }
 
   
@@ -105,10 +110,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
 
 
-    if(getAlliance())
-    {
-      m_driveSubsystem.flipGyro();
-    }
+    
   }
 
   /** This function is called periodically during test mode. */
