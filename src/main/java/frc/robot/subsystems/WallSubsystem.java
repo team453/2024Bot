@@ -33,6 +33,7 @@ public class WallSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putString("Underbot State", state);
         // Feed the motor safety object to ensure the motor does not get disabled
         m_wallMotor.feed();
     }

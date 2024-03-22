@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;*/
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 //import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.UnderBotSubsystemConstants;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 //import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.UnderBotSubsystem;
@@ -41,7 +43,8 @@ public class RobotContainer {
   Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
   private final SendableChooser<Double> speedChooser = new SendableChooser<>();
   private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
-  private final WallSubsystem m_WallSubsystem = new WallSubsystem();
+ // private final WallSubsystem m_WallSubsystem = new WallSubsystem();
+  //private final ClimberSubsystem m_climber = new ClimberSubsystem();
   private final SendableChooser<Command> autoChooser;
   // Add a boolean variable to track field position state
   private boolean isFieldPositionEnabled = true; // Initialize to false by default
@@ -55,13 +58,14 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("Shooter Routine", new PathPlannerAuto("basicShoot"));
-    autoChooser.addOption("Qual 13", new PathPlannerAuto("Match13Path"));
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
     configureButtonBindings();
     configureDefaultDriveCommand();
     configureUnderBotButtonBindings();
-    configureWallButtonBindings();
-   updateShuffleboard();
+   // configureWallButtonBindings();
+   //configureClimberButtonBindings()
+    updateShuffleboard();
   }
 
   private void updateShuffleboard() {
@@ -79,14 +83,14 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
-           isFieldPositionEnabled = true;
+           isFieldPositionEnabled = false;
               // Update the SmartDashboard with the current state after changing it
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
-            true, isFieldPositionEnabled);
+            false, isFieldPositionEnabled);
         }, 
         m_drivetrain)
     );
@@ -105,14 +109,14 @@ public class RobotContainer {
     .whileTrue(new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
           // Toggle the field position state when button 1 is pressed
-          isFieldPositionEnabled = false;
+          isFieldPositionEnabled = true;
           // Update the SmartDashboard with the new state
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (speedMultiplier/2),
-            false, isFieldPositionEnabled);
+            true, isFieldPositionEnabled);
         }, 
         m_drivetrain));
   }
@@ -131,10 +135,13 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton)
         .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed));
 
-         new JoystickButton(m_operatorController, 11)
-        .whileTrue(m_underBot.new ShootAmpCommand(-0.35, 0.2));
+       
+        new JoystickButton(m_operatorController, 11)
+       .whileTrue(m_underBot.new ShootAmpCommand(-0.6,0.35));
+
 }
 
+/* 
 private void configureWallButtonBindings()
 {
      new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton)
@@ -152,6 +159,24 @@ private void configureWallButtonBindings()
          new JoystickButton(m_operatorController, OIConstants.kWallMoveDownButton+2)
         .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(-0.25));
 }
+*/
+/* 
+private void configureClimberButtonBindings()
+{
+ new JoystickButton(m_operatorController, OIConstants.kMoveHookUpButton)
+        .whileTrue(m_climber.new MoveHookCommand(true));
+
+          new JoystickButton(m_operatorController, OIConstants.kMoveHookDownButton)
+        .whileTrue(m_climber.new MoveHookCommand(false));
+
+         new JoystickButton(m_operatorController, OIConstants.kPullWinchUpButton)
+        .whileTrue(m_climber.new MoveWenchCommand(true));
+
+          new JoystickButton(m_operatorController, OIConstants.kReleaseWinchButton)
+        .whileTrue(m_climber.new MoveWenchCommand(false));
+
+}
+*/
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
