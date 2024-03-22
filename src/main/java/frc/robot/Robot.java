@@ -92,11 +92,15 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    /*
+    I dont think this works
     if(getAlliance())
     {
       m_driveSubsystem.flipGyro();
-    }
+    }*/
+    
   }
+
 
   
 
