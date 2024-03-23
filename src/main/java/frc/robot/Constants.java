@@ -82,8 +82,8 @@ public static final class OIConstants {
 
   public static final class ClimberConstants
   {
-    public static final int kClimberMotorCanId = 15;
-    public static final int kWenchMotorCanId = 16;
+    public static final int kClimberMotorCanId = 18;
+    public static final int kWenchMotorCanId = 17;
 
     public static final double kWenchSpeed = 0.5;
     public static final double kHookSpeed = 0.3;
@@ -123,9 +123,9 @@ public static final class OIConstants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(25.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    public static final double kWheelBase = Units.inchesToMeters(25.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -141,16 +141,16 @@ public static final class OIConstants {
 
     // SPARK MAX CAN IDs
 
-    public static final int kFrontRightDrivingCanId = 5;
-    public static final int kFrontLeftDrivingCanId = 7;
-    public static final int kRearLeftDrivingCanId = 1;
-    public static final int kRearRightDrivingCanId = 3;
+    public static final int kFrontRightDrivingCanId = 1;
+    public static final int kFrontLeftDrivingCanId = 3;
+    public static final int kRearLeftDrivingCanId = 5;
+    public static final int kRearRightDrivingCanId = 7;
 
 
-    public static final int kFrontRightTurningCanId = 4;
-    public static final int kFrontLeftTurningCanId = 2;
-    public static final int kRearLeftTurningCanId = 8;
-    public static final int kRearRightTurningCanId = 6;
+    public static final int kFrontRightTurningCanId = 8;
+    public static final int kFrontLeftTurningCanId = 6;
+    public static final int kRearLeftTurningCanId = 4;
+    public static final int kRearRightTurningCanId = 2;
 
     public static final boolean kGyroReversed = false;
   }
@@ -229,10 +229,10 @@ public static final class OIConstants {
 
   public static final class Swerve
   {
-    public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
-    public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
-    public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
-    public static final Translation2d brModuleOffset = new Translation2d(-0.4, -0.4);
+    public static final Translation2d flModuleOffset = new Translation2d(0.6477, 0.6477);
+    public static final Translation2d frModuleOffset = new Translation2d(0.6477, -0.6477);
+    public static final Translation2d blModuleOffset = new Translation2d(-0.6477, 0.6477);
+    public static final Translation2d brModuleOffset = new Translation2d(-0.6477, -0.6477);
 
     public static final double maxModuleSpeed = 2; // M/S
 
