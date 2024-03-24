@@ -90,7 +90,7 @@ public class DriveSubsystem extends SubsystemBase {
       this::resetOdometry, 
       this::getSpeeds, 
       this::driveRobotRelative, 
-      Constants.Swerve.pathFollowerConfig, 
+      Constants.Swerve.pathFollowerConfig,
       () -> {
         var alliance = DriverStation.getAlliance();
         if(alliance.isPresent()) {
@@ -98,6 +98,11 @@ public class DriveSubsystem extends SubsystemBase {
         }
         return false;
       }, this);
+  }
+
+  public void flipGyro()
+  {
+    m_gyro.setFusedHeading(-getHeading());
   }
 
   public void resetOdometry()
