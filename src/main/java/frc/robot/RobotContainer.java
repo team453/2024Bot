@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.UnderBotSubsystemConstants;
 import frc.robot.commands.pathfindingCommands;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 //import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.UnderBotSubsystem;
@@ -50,8 +51,7 @@ public class RobotContainer {
   Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
   private final SendableChooser<Double> speedChooser = new SendableChooser<>();
   private final UnderBotSubsystem m_underBot = new UnderBotSubsystem();
- // private final WallSubsystem m_WallSubsystem = new WallSubsystem();
-  //private final ClimberSubsystem m_climber = new ClimberSubsystem();
+  private final ClimberSubsystem m_climber = new ClimberSubsystem();
   private final SendableChooser<Command> autoChooser;
   // Add a boolean variable to track field position state
   private boolean isFieldPositionEnabled = true; // Initialize to false by default
@@ -59,6 +59,7 @@ public class RobotContainer {
   private final pathfindingCommands paths = new pathfindingCommands();
 
   public RobotContainer() {
+    m_drivetrain = new DriveSubsystem();
     field = new Field2d();
     SmartDashboard.putData("Field", field);
 
@@ -78,11 +79,7 @@ public class RobotContainer {
     //logs data to add to the current path to the 2D field widget
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
     
-
-
-    m_drivetrain = new DriveSubsystem();
-
-     // Register Named Commands for PathPlanner
+    // Register Named Commands for PathPlanner
     NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(-0.75));
     NamedCommands.registerCommand("intakeCommand", m_underBot.new SequentialIntakeCommand());
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -93,8 +90,7 @@ public class RobotContainer {
     configureButtonBindings();
     configureDefaultDriveCommand();
     configureUnderBotButtonBindings();
-   // configureWallButtonBindings();
-   //configureClimberButtonBindings()
+   configureClimberButtonBindings();
     updateShuffleboard();
     configureAutonomousButtonBindings();
   }
@@ -164,41 +160,23 @@ public class RobotContainer {
        .whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
 
     new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton)
-        .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed));
+        .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterRPM));
 
-       
+   new JoystickButton(m_operatorController, 12)
+        .whileTrue(m_underBot.new ShootCommand(0.9));
+
         new JoystickButton(m_operatorController, 11)
        .whileTrue(m_underBot.new ShootAmpCommand(-0.6,0.35));
 
 }
 
-/* 
-private void configureWallButtonBindings()
-{
-     new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton)
-        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.25));
 
-          new JoystickButton(m_operatorController, OIConstants.kWallMoveDownButton)
-        .whileTrue(m_WallSubsystem.new MoveWallCommand(-0.25));
-
-         new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton+2)
-        .whileTrue(m_WallSubsystem.new MoveWallCommand(0.25));
-
-          new JoystickButton(m_operatorController, OIConstants.kWallMoveUpButton+2)
-        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(0.25));
-
-         new JoystickButton(m_operatorController, OIConstants.kWallMoveDownButton+2)
-        .whileTrue(m_WallSubsystem.new MoveWallOverideCommand(-0.25));
-}
-
-*/
-/* 
 private void configureClimberButtonBindings()
 {
  new JoystickButton(m_operatorController, OIConstants.kMoveHookUpButton)
         .whileTrue(m_climber.new MoveHookCommand(true));
 
-          new JoystickButton(m_operatorController, OIConstants.kMoveHookDownButton)
+        new JoystickButton(m_operatorController, OIConstants.kMoveHookDownButton)
         .whileTrue(m_climber.new MoveHookCommand(false));
 
          new JoystickButton(m_operatorController, OIConstants.kPullWinchUpButton)
@@ -208,7 +186,6 @@ private void configureClimberButtonBindings()
         .whileTrue(m_climber.new MoveWenchCommand(false));
 
 }
-*/
 
 
 private void configureAutonomousButtonBindings()

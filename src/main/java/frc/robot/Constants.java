@@ -73,8 +73,8 @@ public static final class OIConstants {
     public static final double kOuttakeSpeed = -0.2;
     public static final double kIntakeFeederSpeed = 0.25;
 
-    public static final double kHighShooterSpeed = -0.90;
-    public static final double kLowShooterSpeed = -0.25;
+    public static final double kHighShooterRPM = -600;
+    public static final double kLowShooterRPM = -0.25;
 
     //timings
     public static final double kShooterDelay = 0.5;
@@ -82,8 +82,8 @@ public static final class OIConstants {
 
   public static final class ClimberConstants
   {
-    public static final int kClimberMotorCanId = 18;
-    public static final int kWenchMotorCanId = 17;
+    public static final int kClimberMotorCanId = 17;
+    public static final int kWenchMotorCanId = 18;
 
     public static final double kWenchSpeed = 0.5;
     public static final double kHookSpeed = 0.3;

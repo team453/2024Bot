@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -10,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.WallSubsystemConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
     private final CANSparkMax m_wench;
@@ -18,8 +14,8 @@ public class ClimberSubsystem extends SubsystemBase {
     private String state;
 
     public ClimberSubsystem() {
-        m_wench = new CANSparkMax(ClimberConstants.kWenchMotorCanId, MotorType.kBrushless);
-        m_hook = new CANSparkMax(ClimberConstants.kClimberMotorCanId, MotorType.kBrushless);
+        m_wench = new CANSparkMax(ClimberConstants.kWenchMotorCanId, MotorType.kBrushed);
+        m_hook = new CANSparkMax(ClimberConstants.kClimberMotorCanId, MotorType.kBrushed);
         state = "Ready";
     }
 
