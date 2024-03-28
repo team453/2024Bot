@@ -110,14 +110,14 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
-           isFieldPositionEnabled = false;
+           isFieldPositionEnabled = true;
               // Update the SmartDashboard with the current state after changing it
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
-            false, true);
+            true, true);
         }, 
         m_drivetrain)
     );
@@ -136,14 +136,14 @@ public class RobotContainer {
     .whileTrue(new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
           // Toggle the field position state when button 1 is pressed
-          isFieldPositionEnabled = true;
+          isFieldPositionEnabled = false;
           // Update the SmartDashboard with the new state
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (speedMultiplier/2),
-            true, true);
+            false, true);
         }, 
         m_drivetrain));
   }

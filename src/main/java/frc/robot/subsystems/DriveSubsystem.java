@@ -103,7 +103,16 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetOdometry()
   {
+    //this may need to change idk tho
     m_gyro.setFusedHeading(0);
+    m_odometry.resetPosition(
+        Rotation2d.fromDegrees(m_gyro.getFusedHeading()),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        }, new Pose2d(0,0,Rotation2d.fromDegrees(0)));
     
   }
   @Override
@@ -228,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
     double normalizedHeading = m_gyro.getFusedHeading() % 360;
-if (normalizedHeading < 0) {
+    if (normalizedHeading < 0) {
     normalizedHeading += 360; // Correct negative values
 }
 
