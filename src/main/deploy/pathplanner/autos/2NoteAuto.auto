@@ -30,6 +30,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "startIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "intakeNote"
@@ -38,9 +44,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeCommand"
-
-            "name": "StopIntake"
+            "name": "stopIntake"
           }
         },
         {
