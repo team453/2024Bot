@@ -39,6 +39,8 @@
           "type": "named",
           "data": {
             "name": "intakeCommand"
+
+            "name": "StopIntake"
           }
         },
         {

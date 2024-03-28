@@ -81,7 +81,8 @@ public class RobotContainer {
     
     // Register Named Commands for PathPlanner
     NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(-0.75));
-    NamedCommands.registerCommand("intakeCommand", m_underBot.new SequentialIntakeCommand());
+    NamedCommands.registerCommand("StartIntake", m_underBot.new IntakeCommand());
+    NamedCommands.registerCommand("StopIntake", m_underBot.new StopMotorsCommand());
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("Shooter Routine", new PathPlannerAuto("basicShoot"));
