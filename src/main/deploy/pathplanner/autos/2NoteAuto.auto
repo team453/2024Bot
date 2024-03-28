@@ -30,15 +30,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intakeCommand"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "intakeNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeCommand"
           }
         },
         {

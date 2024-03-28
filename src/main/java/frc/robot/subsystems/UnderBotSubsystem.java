@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -17,12 +19,23 @@ public class UnderBotSubsystem extends SubsystemBase {
 
     private final CANSparkMax m_intake;
     private final CANSparkMax m_shooter;
+    private final SparkPIDController  m_shooterPIDController;
     private String state;
   
   /** Creates a new ExampleSubsystem. */
   public UnderBotSubsystem() {
     m_intake = new CANSparkMax(UnderBotSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
     m_shooter = new CANSparkMax(UnderBotSubsystemConstants.kShooterMotorCanId, MotorType.kBrushless);
+
+    m_shooterPIDController = m_shooter.getPIDController();
+
+    // PID Coefficients, these should be tuned for your specific robot
+    m_shooterPIDController.setP(0.0001);
+    m_shooterPIDController.setI(0.0000);
+    m_shooterPIDController.setD(0);
+    m_shooterPIDController.setFF(0.00017);
+    m_shooterPIDController.setOutputRange(-1, 0);
+
   state = "Ready";
   }
 
@@ -126,7 +139,7 @@ public class ShootCommand extends Command {
         timer.reset();
         state = "Preparing Shoot";
         // Start the shooter motor at the specified speed
-        setShooterMotor(speed);
+        setShooterRPM(speed);
     }
 
     @Override
@@ -144,6 +157,11 @@ public class ShootCommand extends Command {
     private void setIntakeMotor(double speed) {
         UnderBotSubsystem.this.setIntakeMotor(speed);
     }
+
+    
+    private void setShooterRPM(double rpm) {
+        m_shooterPIDController.setReference(rpm, CANSparkBase.ControlType.kVelocity);
+}
 }
 
 
@@ -161,7 +179,7 @@ public class ShootAmpCommand extends Command {
      @Override
     public void execute() {
          // Check if 3 seconds have passed since the command started
-         if (timer.get() >= 0.5) {
+         if (timer.get() >= 1) {
             state = "Amp Shoot";
             // 3 seconds after starting, run the intake motor
             setIntakeMotor(speed2);
@@ -178,7 +196,7 @@ public class ShootAmpCommand extends Command {
         timer.reset();
         state = "Preparing Amp Shoot";
         // Start the shooter motor at the specified speed
-        setShooterMotor(speed1);
+        setShooterRPM(speed1);
     }
 
     @Override
@@ -196,6 +214,10 @@ public class ShootAmpCommand extends Command {
     private void setIntakeMotor(double speed) {
         UnderBotSubsystem.this.setIntakeMotor(speed);
     }
+
+     private void setShooterRPM(double rpm) {
+        m_shooterPIDController.setReference(rpm, CANSparkBase.ControlType.kVelocity);
+}
 }
 
 // Inner class for thing
@@ -290,13 +312,37 @@ public class PrepareShootCommand extends Command {
     }
 }
 
+public class StopCommand extends Command {
+    
+    public StopCommand() {
+      
+        // Add requirements to ensure this command has exclusive access to the IntakeSubsystem
+        addRequirements(UnderBotSubsystem.this);
+    }
+
+    @Override
+    public void execute() {
+        state = "Stopping";
+        UnderBotSubsystem.this.setShooterMotor(0);
+        UnderBotSubsystem.this.setIntakeMotor(0);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        // Command end action: Stop the motor, whether the command ends normally or is interrupted
+        state = "Idle";
+    }
+
+  
+}
+
 public Command StopUnderbot()
 {
   return new RunCommand(() -> {
    //stop all motors
    m_intake.set(0);
    m_shooter.set(0);
-}, this); 
+}); 
 }
 
   
@@ -411,4 +457,5 @@ public class SequentialIntakeCommand extends SequentialCommandGroup
     }
 }
 }
+
 

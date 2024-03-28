@@ -92,7 +92,6 @@ public class RobotContainer {
     configureUnderBotButtonBindings();
    configureClimberButtonBindings();
     updateShuffleboard();
-    configureAutonomousButtonBindings();
   }
 
   private void updateShuffleboard() {
@@ -117,7 +116,7 @@ public class RobotContainer {
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
-            false, isFieldPositionEnabled);
+            false, true);
         }, 
         m_drivetrain)
     );
@@ -143,7 +142,7 @@ public class RobotContainer {
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (speedMultiplier/2),
-            true, isFieldPositionEnabled);
+            true, true);
         }, 
         m_drivetrain));
   }
@@ -162,11 +161,12 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton)
         .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterRPM));
 
-   new JoystickButton(m_operatorController, 12)
-        .whileTrue(m_underBot.new ShootCommand(0.9));
+ new JoystickButton(m_operatorController, 12)
+     .whileTrue(m_underBot.new StopCommand());
 
         new JoystickButton(m_operatorController, 11)
-       .whileTrue(m_underBot.new ShootAmpCommand(-0.6,0.35));
+        //rpm, set speed
+       .whileTrue(m_underBot.new ShootAmpCommand(-2500,0.35));
 
 }
 
@@ -188,32 +188,6 @@ private void configureClimberButtonBindings()
 }
 
 
-private void configureAutonomousButtonBindings()
-{
-    new JoystickButton(m_driverController, 2).onTrue(paths.toLoadingStation());
-
-    //This follows a sequence of points. Change bezierPoints to change where the paths go.
-    new JoystickButton(m_driverController, 3).onTrue(Commands.runOnce(() -> {
-      //Created a list of bezier points. These are essentially waypoints. The rotation component acts as the direction of travel.
-      //DO NOT SET HOLONOMIC ROTATION HERE!!
-      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(
-        new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
-        new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
-        new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
-      );
-
-      PathPlannerPath path = new PathPlannerPath(
-        bezierPoints,
-        new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path.
-        new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here.
-      );
-
-      //Uncomment this if the paths are acting strangely on the red alliance.
-      //path.preventFlipping = true;
-
-      AutoBuilder.followPath(path).schedule();
-    }));
-}
 
 
   /**

@@ -43,8 +43,8 @@ public static final class OIConstants {
     //under bot
    public static final int kUnderbotIntakeButton = 5;
    public static final int kUnderbotEjectButton = 6;
-   public static final int kUnderbotShooterHighButton = 3;
-  public static final int kUnderbotShooterLowButton = 4;
+   public static final int kUnderbotShooterHighButton = 4;
+  public static final int kUnderbotShooterLowButton = 3;
 
   //wall
   public static final int kWallMoveUpButton = 7;
@@ -71,10 +71,10 @@ public static final class OIConstants {
     //speeds
     public static final double kIntakeSpeed = 0.2;
     public static final double kOuttakeSpeed = -0.2;
-    public static final double kIntakeFeederSpeed = 0.25;
+    public static final double kIntakeFeederSpeed = 0.4;
 
-    public static final double kHighShooterRPM = -600;
-    public static final double kLowShooterRPM = -0.25;
+    public static final double kHighShooterRPM = -4500;
+   // public static final double kLowShooterRPM = -0.25;
 
     //timings
     public static final double kShooterDelay = 0.5;
