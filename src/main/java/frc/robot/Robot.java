@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,7 +28,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Starts up webcams!!
-    CameraServer.startAutomaticCapture();
+    
+   // CameraServer.startAutomaticCapture();
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -87,7 +90,18 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    /*
+    I dont think this works
+    if(getAlliance())
+    {
+      m_driveSubsystem.flipGyro();
+    }*/
+    
   }
+
+
+  
 
   /** This function is called periodically during operator control. */
   @Override
@@ -97,9 +111,23 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+
+    
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+
+  //TRUE if we're on red alliance, FALSE if we're on blue alliance (probably??)
+  public boolean getAlliance()
+  {
+    var alliance = DriverStation.getAlliance();
+        if(alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+  }
 }

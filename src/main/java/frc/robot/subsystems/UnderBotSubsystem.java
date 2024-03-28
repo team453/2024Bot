@@ -1,9 +1,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,13 +19,40 @@ public class UnderBotSubsystem extends SubsystemBase {
 
     private final CANSparkMax m_intake;
     private final CANSparkMax m_shooter;
+    private final SparkPIDController  m_shooterPIDController;
+    private String state;
   
   /** Creates a new ExampleSubsystem. */
   public UnderBotSubsystem() {
     m_intake = new CANSparkMax(UnderBotSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
     m_shooter = new CANSparkMax(UnderBotSubsystemConstants.kShooterMotorCanId, MotorType.kBrushless);
-  
+
+    m_shooterPIDController = m_shooter.getPIDController();
+
+    // PID Coefficients, these should be tuned for your specific robot
+    m_shooterPIDController.setP(0.0001);
+    m_shooterPIDController.setI(0.0000);
+    m_shooterPIDController.setD(0);
+    m_shooterPIDController.setFF(0.00017);
+    m_shooterPIDController.setOutputRange(-1, 0);
+
+  state = "Ready";
   }
+
+  @Override
+    public void periodic() {
+        SmartDashboard.putString("Underbot State", state);
+    }
+    
+    public void setIntakeMotor(double speed) {
+    m_intake.set(speed);
+    }
+
+    public void setShooterMotor(double speed) {
+    m_shooter.set(speed);
+    }
+
+
 
   // Inner class for operating the intake
 public class IntakeCommand extends Command {
@@ -35,6 +63,7 @@ public class IntakeCommand extends Command {
 
     @Override
     public void execute() {
+             state = "Floor intake";
             setIntakeMotor(UnderBotSubsystemConstants.kIntakeSpeed);
     }
 
@@ -42,6 +71,7 @@ public class IntakeCommand extends Command {
     public void end(boolean interrupted) {
         // Command end action: Stop the motor, whether the command ends normally or is interrupted
         setIntakeMotor(0);
+        state = "Idle";
     }
 
 
@@ -60,7 +90,7 @@ public class EjectCommand extends Command {
     @Override
     public void execute() {
         // Command execution: Run the motor unless the beam break is tripped
-       
+            state = "Floor Eject";
             setIntakeMotor(UnderBotSubsystemConstants.kOuttakeSpeed);
        
     }
@@ -69,6 +99,7 @@ public class EjectCommand extends Command {
     public void end(boolean interrupted) {
         // Command end action: Stop the motor, whether the command ends normally or is interrupted
         setIntakeMotor(0);
+        state = "Idle";
     }
 
    
@@ -85,6 +116,7 @@ public class ShootCommand extends Command {
         this.speed = speed;
         // Add requirements to ensure this command has exclusive access to the IntakeSubsystem
         addRequirements(UnderBotSubsystem.this);
+        
     }
 
      @Override
@@ -92,6 +124,7 @@ public class ShootCommand extends Command {
          // Check if 3 seconds have passed since the command started
          if (timer.get() >= 0.5) {
             // 3 seconds after starting, run the intake motor
+            state = "Shooting";
             setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed);
         }
         else{
@@ -104,8 +137,9 @@ public class ShootCommand extends Command {
     public void initialize() {
         timer.start();
         timer.reset();
+        state = "Preparing Shoot";
         // Start the shooter motor at the specified speed
-        setShooterMotor(speed);
+        setShooterRPM(speed);
     }
 
     @Override
@@ -113,6 +147,7 @@ public class ShootCommand extends Command {
         // Command end action: Stop the motors, whether the command ends normally or is interrupted
         setShooterMotor(0);
         setIntakeMotor(0);
+        state = "Idle";
     }
 
     private void setShooterMotor(double speed) {
@@ -122,6 +157,11 @@ public class ShootCommand extends Command {
     private void setIntakeMotor(double speed) {
         UnderBotSubsystem.this.setIntakeMotor(speed);
     }
+
+    
+    private void setShooterRPM(double rpm) {
+        m_shooterPIDController.setReference(rpm, CANSparkBase.ControlType.kVelocity);
+}
 }
 
 
@@ -139,7 +179,8 @@ public class ShootAmpCommand extends Command {
      @Override
     public void execute() {
          // Check if 3 seconds have passed since the command started
-         if (timer.get() >= 0.5) {
+         if (timer.get() >= 1) {
+            state = "Amp Shoot";
             // 3 seconds after starting, run the intake motor
             setIntakeMotor(speed2);
         }
@@ -153,8 +194,9 @@ public class ShootAmpCommand extends Command {
     public void initialize() {
         timer.start();
         timer.reset();
+        state = "Preparing Amp Shoot";
         // Start the shooter motor at the specified speed
-        setShooterMotor(speed1);
+        setShooterRPM(speed1);
     }
 
     @Override
@@ -162,6 +204,7 @@ public class ShootAmpCommand extends Command {
         // Command end action: Stop the motors, whether the command ends normally or is interrupted
         setShooterMotor(0);
         setIntakeMotor(0);
+        state = "Idle";
     }
 
     private void setShooterMotor(double speed) {
@@ -171,8 +214,13 @@ public class ShootAmpCommand extends Command {
     private void setIntakeMotor(double speed) {
         UnderBotSubsystem.this.setIntakeMotor(speed);
     }
+
+     private void setShooterRPM(double rpm) {
+        m_shooterPIDController.setReference(rpm, CANSparkBase.ControlType.kVelocity);
 }
- // Inner class for thing
+}
+
+// Inner class for thing
 public class SourceIntakeCommand extends Command {
     double speed;
     public SourceIntakeCommand(double speed) {
@@ -183,6 +231,7 @@ public class SourceIntakeCommand extends Command {
 
     @Override
     public void execute() {
+        state = "Source Intake";
        setShooterMotor(speed);
        setIntakeMotor(UnderBotSubsystemConstants.kOuttakeSpeed);
     }
@@ -192,6 +241,40 @@ public class SourceIntakeCommand extends Command {
         // Command end action: Stop the motor, whether the command ends normally or is interrupted
         setShooterMotor(0);
         setIntakeMotor(0);
+        state = "Idle";
+    }
+
+     private void setShooterMotor(double speed) {
+        UnderBotSubsystem.this.setShooterMotor(speed);
+    }
+
+    private void setIntakeMotor(double speed) {
+        UnderBotSubsystem.this.setIntakeMotor(speed);
+    }
+}
+
+//reverse the shooter for that kind of intake
+public class ReverseIntakeCommand extends Command {
+    double speed;
+    public ReverseIntakeCommand(double speed) {
+        this.speed = -speed;
+        // Add requirements to ensure this command has exclusive access to the IntakeSubsystem
+        addRequirements(UnderBotSubsystem.this);
+    }
+
+    @Override
+    public void execute() {
+        state = "Reverse Intake";
+       setShooterMotor(speed);
+       setIntakeMotor(UnderBotSubsystemConstants.kOuttakeSpeed);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        // Command end action: Stop the motor, whether the command ends normally or is interrupted
+        setShooterMotor(0);
+        setIntakeMotor(0);
+        state = "Idle";
     }
 
      private void setShooterMotor(double speed) {
@@ -214,69 +297,55 @@ public class PrepareShootCommand extends Command {
 
     @Override
     public void execute() {
+        state = "Preparing Shoot";
        setShooterMotor(speed);
     }
 
     @Override
     public void end(boolean interrupted) {
         // Command end action: Stop the motor, whether the command ends normally or is interrupted
-    
+        state = "Idle";
     }
 
     private void setShooterMotor(double speed) {
         UnderBotSubsystem.this.setShooterMotor(speed);
     }
 }
-public void setIntakeMotor(double speed) {
-    m_intake.set(speed);
+
+public class StopCommand extends Command {
+    
+    public StopCommand() {
+      
+        // Add requirements to ensure this command has exclusive access to the IntakeSubsystem
+        addRequirements(UnderBotSubsystem.this);
+    }
+
+    @Override
+    public void execute() {
+        state = "Stopping";
+        UnderBotSubsystem.this.setShooterMotor(0);
+        UnderBotSubsystem.this.setIntakeMotor(0);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        // Command end action: Stop the motor, whether the command ends normally or is interrupted
+        state = "Idle";
+    }
+
+  
 }
 
-public void setShooterMotor(double speed) {
-    m_shooter.set(speed);
-}
-
-/*
-public Command HighSpeedShootCommand() {
- 
-return new RunCommand(() -> new PrepareShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed) // Start the shooter
-      .withTimeout(UnderBotSubsystemConstants.kShooterDelay) // Set the timeout for the preparation
-       .andThen(() -> new ShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed)) // Feed in the note
-      ); // Stop the shooter and intake if the command is interrupted
-}
-
-
-public Command LowSpeedShootCommand() {
-    return new RunCommand(() -> new PrepareShootCommand(UnderBotSubsystemConstants.kHighShooterSpeed) // Start the shooter
-      .withTimeout(UnderBotSubsystemConstants.kShooterDelay) // Set the timeout for the preparation
-       .andThen(() -> new ShootCommand(UnderBotSubsystemConstants.kLowShooterSpeed)) // Feed in the note
-      ); // Stop the shooter and intake if the command is interrupted
-}
- */
 public Command StopUnderbot()
 {
   return new RunCommand(() -> {
    //stop all motors
    m_intake.set(0);
    m_shooter.set(0);
-}, this); 
+}); 
 }
 
   
-  public boolean isBeamBroken() {
-           return false; //REMOVE ME
-   // return getBeamBreak() < UnderBotSubsystemConstants.kBeamBreakThreshold;
-  }
-
-  @Override
-  public void periodic() {
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
-
-
   //auto stuff
   public class StartShooterCommand extends Command {
     private final double speed;
@@ -287,12 +356,17 @@ public Command StopUnderbot()
 
     @Override
     public void initialize() {
+        state = "Start Shooter";
        UnderBotSubsystem.this.setShooterMotor(speed);
     }
 
     @Override
     public boolean isFinished() {
-        return true; // This command completes immediately after starting the motor
+        state = "Active Shooter";
+        return true; 
+        // This command completes immediately after starting the motor
+        //It does NOT STOP THE MOTOR
+        //Use other commands to do that please :)
     }
 }
 
@@ -304,12 +378,17 @@ public class StartFeederCommand extends Command {
 
     @Override
     public void initialize() {
+        state = "Start Feeder";
         UnderBotSubsystem.this.setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed);
     }
 
     @Override
     public boolean isFinished() {
-        return true; // This command completes immediately after starting the motor
+        state = "Active Feeder";
+        return true; 
+        // This command completes immediately after starting the motor
+        //It does NOT STOP THE MOTOR
+        //Use other commands to do that please :)
     }
 }
 
@@ -321,12 +400,17 @@ public class StartIntakeCommand extends Command {
 
     @Override
     public void initialize() {
+        state = "Started Intake";
         UnderBotSubsystem.this.setIntakeMotor(UnderBotSubsystemConstants.kIntakeSpeed);
     }
 
     @Override
     public boolean isFinished() {
-        return true; // This command completes immediately after starting the motor
+        state = "Active Intake";
+        return true; 
+        // This command completes immediately after starting the motor
+        //It does NOT STOP THE MOTOR
+        //Use other commands to do that please :)
     }
 }
 
@@ -337,12 +421,14 @@ public class StopMotorsCommand extends Command {
 
     @Override
     public void initialize() {
+        state = "Stopping motors";
     UnderBotSubsystem.this.setShooterMotor(0);
      UnderBotSubsystem.this.setIntakeMotor(0);
     }
 
     @Override
     public boolean isFinished() {
+        state = "Idle";
         return true; // This command completes immediately after stopping the motors
     }
 }
@@ -371,4 +457,5 @@ public class SequentialIntakeCommand extends SequentialCommandGroup
     }
 }
 }
+
 

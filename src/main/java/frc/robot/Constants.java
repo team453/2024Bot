@@ -34,19 +34,29 @@ public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.1;
-  //under bot
-  public static final int kUnderbotIntakeButton = 5;
-  public static final int kUnderbotEjectButton = 6;
-  public static final int kUnderbotShooterHighButton = 3;
-  public static final int kUnderbotShooterLowButton = 4;
+    
+    //driving multipliers
+    public static final double kLowSpeedMultiplier = 0.8 ;
+    public static final double kMediumSpeedMultiplier = 0.9;
+    public static final double kHighSpeedMultiplier = 1;
+    
+    //under bot
+   public static final int kUnderbotIntakeButton = 5;
+   public static final int kUnderbotEjectButton = 6;
+   public static final int kUnderbotShooterHighButton = 4;
+  public static final int kUnderbotShooterLowButton = 3;
 
   //wall
   public static final int kWallMoveUpButton = 7;
   public static final int kWallMoveDownButton = 8;
   public static final int kWallHomeButton = 9;
-    public static final double kLowSpeedMultiplier = 0.8 ;
-    public static final double kMediumSpeedMultiplier = 0.9;
-    public static final double kHighSpeedMultiplier = 1;
+
+  //climber
+  public static final int kMoveHookUpButton = 7;
+  public static final int kMoveHookDownButton = 8;
+  public static final int kPullWinchUpButton = 9;
+  public static final int kReleaseWinchButton = 10;
+    
   }
 
   public static final class UnderBotSubsystemConstants {
@@ -61,15 +71,23 @@ public static final class OIConstants {
     //speeds
     public static final double kIntakeSpeed = 0.2;
     public static final double kOuttakeSpeed = -0.2;
-    public static final double kIntakeFeederSpeed = 0.25;
+    public static final double kIntakeFeederSpeed = 0.4;
 
-    public static final double kHighShooterSpeed = -0.90;
-    public static final double kLowShooterSpeed = -0.25;
+    public static final double kHighShooterRPM = -4500;
+   // public static final double kLowShooterRPM = -0.25;
 
     //timings
     public static final double kShooterDelay = 0.5;
   }
 
+  public static final class ClimberConstants
+  {
+    public static final int kClimberMotorCanId = 17;
+    public static final int kWenchMotorCanId = 18;
+
+    public static final double kWenchSpeed = 0.5;
+    public static final double kHookSpeed = 0.3;
+  }
   
   public static final class WallSubsystemConstants {
     public static final int kWallMotorCanId = 20;
@@ -77,6 +95,7 @@ public static final class OIConstants {
     public static double kBottomLimit = 3;
     public static double kTopLimit = 75;
   }
+
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
@@ -91,6 +110,8 @@ public static final class OIConstants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
+
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -102,9 +123,9 @@ public static final class OIConstants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(25.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    public static final double kWheelBase = Units.inchesToMeters(25.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -120,16 +141,16 @@ public static final class OIConstants {
 
     // SPARK MAX CAN IDs
 
-    public static final int kFrontRightDrivingCanId = 5;
-    public static final int kFrontLeftDrivingCanId = 7;
-    public static final int kRearLeftDrivingCanId = 1;
-    public static final int kRearRightDrivingCanId = 3;
+    public static final int kFrontRightDrivingCanId = 1;
+    public static final int kFrontLeftDrivingCanId = 3;
+    public static final int kRearLeftDrivingCanId = 5;
+    public static final int kRearRightDrivingCanId = 7;
 
 
-    public static final int kFrontRightTurningCanId = 4;
-    public static final int kFrontLeftTurningCanId = 2;
-    public static final int kRearLeftTurningCanId = 8;
-    public static final int kRearRightTurningCanId = 6;
+    public static final int kFrontRightTurningCanId = 8;
+    public static final int kFrontLeftTurningCanId = 6;
+    public static final int kRearLeftTurningCanId = 4;
+    public static final int kRearRightTurningCanId = 2;
 
     public static final boolean kGyroReversed = false;
   }
@@ -206,13 +227,12 @@ public static final class OIConstants {
    }
 
 
-
   public static final class Swerve
   {
-    public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
-    public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
-    public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
-    public static final Translation2d brModuleOffset = new Translation2d(-0.4, -0.4);
+    public static final Translation2d flModuleOffset = new Translation2d(0.6477, 0.6477);
+    public static final Translation2d frModuleOffset = new Translation2d(0.6477, -0.6477);
+    public static final Translation2d blModuleOffset = new Translation2d(-0.6477, 0.6477);
+    public static final Translation2d brModuleOffset = new Translation2d(-0.6477, -0.6477);
 
     public static final double maxModuleSpeed = 2; // M/S
 
