@@ -146,6 +146,19 @@ public class RobotContainer {
             false, true);
         }, 
         m_drivetrain));
+
+        //ITS TURBO TIME
+        new JoystickButton(m_driverController, OIConstants.kTurboButton)
+    .whileTrue(new RunCommand(() -> {
+          // Update the SmartDashboard with the new state
+          SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
+          m_drivetrain.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * 1,
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * 1,
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (1/2),
+            isFieldPositionEnabled, true);
+        }, 
+        m_drivetrain)); 
   }
 
   private void configureUnderBotButtonBindings() {

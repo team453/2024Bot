@@ -35,6 +35,7 @@ public static final class OIConstants {
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.1;
     
+    public static final int kTurboButton = 2;
     //driving multipliers
     public static final double kLowSpeedMultiplier = 0.8 ;
     public static final double kMediumSpeedMultiplier = 0.9;
@@ -85,8 +86,8 @@ public static final class OIConstants {
     public static final int kClimberMotorCanId = 17;
     public static final int kWenchMotorCanId = 18;
 
-    public static final double kWenchSpeed = 0.5;
-    public static final double kHookSpeed = 0.3;
+    public static final double kWenchSpeed = 0.8;
+    public static final double kHookSpeed = 0.5;
   }
   
   public static final class WallSubsystemConstants {
