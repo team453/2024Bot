@@ -188,16 +188,18 @@ public class RobotContainer {
 private void configureClimberButtonBindings()
 {
  new JoystickButton(m_operatorController, OIConstants.kMoveHookUpButton)
-        .whileTrue(m_climber.new MoveHookCommand(true));
+        .whileTrue(m_climber.new MoveHookCommand(false));
 
         new JoystickButton(m_operatorController, OIConstants.kMoveHookDownButton)
-        .whileTrue(m_climber.new MoveHookCommand(false));
+        .whileTrue(m_climber.new MoveHookCommand(true));
 
          new JoystickButton(m_operatorController, OIConstants.kPullWinchUpButton)
         .whileTrue(m_climber.new MoveWenchCommand(true));
 
           new JoystickButton(m_operatorController, OIConstants.kReleaseWinchButton)
         .whileTrue(m_climber.new MoveWenchCommand(false));
+
+         
 
 }
 

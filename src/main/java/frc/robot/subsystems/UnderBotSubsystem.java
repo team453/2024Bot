@@ -33,7 +33,7 @@ public class UnderBotSubsystem extends SubsystemBase {
     m_shooterPIDController.setP(0.0001);
     m_shooterPIDController.setI(0.0000);
     m_shooterPIDController.setD(0);
-    m_shooterPIDController.setFF(0.00017);
+    m_shooterPIDController.setFF(0.00019);
     m_shooterPIDController.setOutputRange(-1, 0);
 
   state = "Ready";
@@ -122,7 +122,7 @@ public class ShootCommand extends Command {
      @Override
     public void execute() {
          // Check if 3 seconds have passed since the command started
-         if (timer.get() >= 0.5) {
+         if (timer.get() >= 0.75) {
             // 3 seconds after starting, run the intake motor
             state = "Shooting";
             setIntakeMotor(UnderBotSubsystemConstants.kIntakeFeederSpeed);

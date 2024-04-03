@@ -86,6 +86,33 @@ public class ClimberSubsystem extends SubsystemBase {
         state = "Idle";
     }
     }
+
+    public class MoveBothCommand extends Command {
+    private boolean isMovingUp;
+
+    public MoveBothCommand(boolean isMovingUp) {
+        this.isMovingUp = isMovingUp;
+        // Add requirements to ensure this command has exclusive access to the WallSubsystem
+        addRequirements(ClimberSubsystem.this);
+    }
+
+    @Override
+    public void execute() {
+      if(isMovingUp)
+      {
+        state = "Moving Both Up";
+        m_hook.set(ClimberConstants.kHookSpeed);
+        m_wench.set(ClimberConstants.kWenchSpeed);
+
+      }
+      else
+      {
+        state = "Moving Both Down";
+        m_hook.set(-ClimberConstants.kHookSpeed);
+         m_wench.set(-ClimberConstants.kWenchSpeed);
+      }
+    }
+}
 }
 
 
