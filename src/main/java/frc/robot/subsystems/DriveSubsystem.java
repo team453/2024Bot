@@ -13,14 +13,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.helpers.LimelightHelpers;
 import frc.utils.SwerveUtils;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -55,7 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
-  PigeonIMU m_gyro = new PigeonIMU(0); // Initialize the gyro sensor on a specific port
+  PigeonIMU m_gyro = new PigeonIMU(24); // Initialize the gyro sensor on a specific port
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -81,7 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     //set the initial pose of the robot
-    m_gyro.setFusedHeading(0.0);
+    m_gyro.setFusedHeading(0);
 
 
     AutoBuilder.configureHolonomic(
@@ -89,7 +86,7 @@ public class DriveSubsystem extends SubsystemBase {
       this::resetOdometry, 
       this::getSpeeds, 
       this::driveRobotRelative, 
-      Constants.Swerve.pathFollowerConfig, 
+      Constants.Swerve.pathFollowerConfig,
       () -> {
         var alliance = DriverStation.getAlliance();
         if(alliance.isPresent()) {
@@ -99,9 +96,23 @@ public class DriveSubsystem extends SubsystemBase {
       }, this);
   }
 
+  public void flipGyro()
+  {
+    m_gyro.setFusedHeading(-getHeading());
+  }
+
   public void resetOdometry()
   {
+    //this may need to change idk tho
     m_gyro.setFusedHeading(0);
+    m_odometry.resetPosition(
+        Rotation2d.fromDegrees(m_gyro.getFusedHeading()),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        }, new Pose2d(0,0,Rotation2d.fromDegrees(0)));
     
   }
   @Override
@@ -225,11 +236,17 @@ public class DriveSubsystem extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
+    double normalizedHeading = m_gyro.getFusedHeading() % 360;
+    if (normalizedHeading < 0) {
+    normalizedHeading += 360; // Correct negative values
+}
+
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
       fieldRelative
-          ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getFusedHeading()))
+          ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(normalizedHeading))
           : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
   
+    SmartDashboard.putNumber("GYRO Fused Heading",normalizedHeading);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
