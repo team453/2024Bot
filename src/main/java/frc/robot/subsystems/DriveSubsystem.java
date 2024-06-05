@@ -102,19 +102,23 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void resetOdometry()
-  {
-    //this may need to change idk tho
+{
+    // Reset the gyro heading to 0
     m_gyro.setFusedHeading(0);
+
+    // Reset the odometry with the updated gyro heading and set the pose to (0,0,0)
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getFusedHeading()),
+        Rotation2d.fromDegrees(0),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
-        }, new Pose2d(0,0,Rotation2d.fromDegrees(0)));
-    
-  }
+        }, 
+        new Pose2d(0, 0, Rotation2d.fromDegrees(0))
+    );
+}
+S
   @Override
   public void periodic() {
     // Update the odometry in the periodic block

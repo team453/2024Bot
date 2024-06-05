@@ -2,25 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 5.5040931765173085
+      "x": 0.7284778050297884,
+      "y": 4.391563704668065
     },
-    "rotation": 180.0
+    "rotation": 119.89890183861456
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "backupToLine"
+            "waitTime": 4.0
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "SourceSide"
           }
         },
         {
@@ -32,13 +32,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "middleSteal"
+            "pathName": "LeaveSpeakerPath"
           }
         }
       ]
