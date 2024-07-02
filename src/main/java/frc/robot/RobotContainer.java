@@ -84,25 +84,32 @@ public class RobotContainer {
     // Register Named Commands for PathPlanner
     NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(-0.75));
     NamedCommands.registerCommand("startIntake", m_underBot.new IntakeCommand());
+    NamedCommands.registerCommand("ejectCommand", m_underBot.new EjectCommand());
     NamedCommands.registerCommand("stopIntake", m_underBot.new StopMotorsCommand());
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("Shooter Routine", new PathPlannerAuto("basicShoot"));
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
+    ResetBindings();
+  }
+
+  public void ResetBindings()
+  {
     updateShuffleboard();
     configureDefaultDriveCommand();
     if(DriverStation.isJoystickConnected(0) && DriverStation.isJoystickConnected(1))
     {
+       SmartDashboard.putString("Driver Style", "BOTH JOYSTICKS");
       configureDriverBindings();
       configureOperatorBindings();
     }
     else
     {
-      
+       SmartDashboard.putString("Driver Style", "ONE JOYSTICK");
+      configureCombinedBindings();
     }
   }
-
   private void updateShuffleboard() {
     speedChooser.setDefaultOption("Low Speed", OIConstants.kLowSpeedMultiplier);
     speedChooser.addOption("Medium Speed", OIConstants.kMediumSpeedMultiplier);
@@ -118,16 +125,16 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(
       new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
-           isFieldPositionEnabled = true;
+           isFieldPositionEnabled = false;
               // Update the SmartDashboard with the current state after changing it
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * speedMultiplier,
-            true, true);
+            false, true);
         }, 
-        m_drivetrain)
+        m_drivetrain) 
     );
   }
 
@@ -136,7 +143,7 @@ private void configureDriverBindings()
   new JoystickButton(m_driverController, 12).onTrue(
       new RunCommand(
             () -> m_drivetrain.resetOdometry()));
-    new JoystickButton(m_driverController, 9)
+    new JoystickButton(m_driverController, 11)
         .whileTrue(new RunCommand(
             () -> m_drivetrain.setX(),
              m_drivetrain));
@@ -145,14 +152,14 @@ private void configureDriverBindings()
     .whileTrue(new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
           // Toggle the field position state when button 1 is pressed
-          isFieldPositionEnabled = false;
+          isFieldPositionEnabled = true;
           // Update the SmartDashboard with the new state
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (speedMultiplier/2),
-            false, true);
+            true, true);
         }, 
         m_drivetrain));
 
@@ -179,8 +186,9 @@ private void configureOperatorBindings()
     new JoystickButton(m_operatorController, OIConstants.kUnderbotEjectButton)
         .whileTrue(m_underBot.new EjectCommand());
 
-   new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterHighButton)
-       .whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
+  new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterHighButton)
+  .whileTrue(m_underBot.new ShootCrazyCommand(UnderBotSubsystemConstants.kLaunchShooterRPM));
+       //.whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
 
     new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton)
         .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterRPM));
@@ -203,32 +211,35 @@ private void configureOperatorBindings()
 private void configureCombinedBindings()
 {
   // UnderBot subsystem bindings
-    new JoystickButton(m_operatorController, OIConstants.kUnderbotIntakeButton)
+    new JoystickButton(m_driverController, OIConstants.kUnderbotIntakeButton)
         .whileTrue(m_underBot.new IntakeCommand());
 
-    new JoystickButton(m_operatorController, OIConstants.kUnderbotEjectButton)
+    new JoystickButton(m_driverController, OIConstants.kUnderbotEjectButton)
         .whileTrue(m_underBot.new EjectCommand());
 
-   new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterLowButton) 
-       .whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
+   new JoystickButton(m_driverController, OIConstants.kUnderbotShooterLowButton) 
+    .whileTrue(m_underBot.new ShootCrazyCommand(UnderBotSubsystemConstants.kLaunchShooterRPM));
+       //.whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
 
-    new JoystickButton(m_operatorController, OIConstants.kUnderbotShooterHighButton)
+    new JoystickButton(m_driverController, OIConstants.kUnderbotShooterHighButton)
         .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterRPM));
 
-        new JoystickButton(m_operatorController, 10)
+        new JoystickButton(m_driverController, 10)
         //rpm, set speed
        .whileTrue(m_underBot.new ShootAmpCommand(-2500,0.35));
 
        //climber
-         new JoystickButton(m_operatorController, OIConstants.kPullWinchUpButton)
+         new JoystickButton(m_driverController, OIConstants.kPullWinchUpButton)
         .whileTrue(m_climber.new MoveWenchCommand(true));
 
-          new JoystickButton(m_operatorController, OIConstants.kReleaseWinchButton)
+          new JoystickButton(m_driverController, OIConstants.kReleaseWinchButton)
         .whileTrue(m_climber.new MoveWenchCommand(false));
 
           new JoystickButton(m_driverController, 12).onTrue(
       new RunCommand(
             () -> m_drivetrain.resetOdometry()));
+
+            
     new JoystickButton(m_driverController, 11)
         .whileTrue(new RunCommand(
             () -> m_drivetrain.setX(),
@@ -238,14 +249,14 @@ private void configureCombinedBindings()
     .whileTrue(new RunCommand(() -> {
           double speedMultiplier = speedChooser.getSelected();
           // Toggle the field position state when button 1 is pressed
-          isFieldPositionEnabled = false;
+          isFieldPositionEnabled = true;
           // Update the SmartDashboard with the new state
           SmartDashboard.putBoolean("Field Position Enabled", isFieldPositionEnabled);
           m_drivetrain.drive(
             -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband) * speedMultiplier,
             -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband) * (speedMultiplier/2),
-            false, true);
+           isFieldPositionEnabled, true);
         }, 
         m_drivetrain));
 

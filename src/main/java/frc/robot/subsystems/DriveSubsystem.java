@@ -103,9 +103,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetOdometry()
 {
-    // Reset the gyro heading to 0
-    m_gyro.setFusedHeading(0);
-
+    //m_gyro.setYaw(0);
+    m_gyro.setFusedHeading(0); 
     // Reset the odometry with the updated gyro heading and set the pose to (0,0,0)
     m_odometry.resetPosition(
         Rotation2d.fromDegrees(0),
@@ -118,7 +117,7 @@ public class DriveSubsystem extends SubsystemBase {
         new Pose2d(0, 0, Rotation2d.fromDegrees(0))
     );
 }
-S
+
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
@@ -139,7 +138,7 @@ S
 
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getFusedHeading()),
+        Rotation2d.fromDegrees(0),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -184,6 +183,7 @@ S
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
     
+    SmartDashboard.putBoolean("Is doing feild", fieldRelative);
     double xSpeedCommanded;
     double ySpeedCommanded;
 
@@ -247,10 +247,10 @@ S
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
       fieldRelative
-          ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(normalizedHeading))
+          ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(m_gyro.getFusedHeading()))
           : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
   
-    SmartDashboard.putNumber("GYRO Fused Heading",normalizedHeading);
+    SmartDashboard.putNumber("GYRO Heading",m_gyro.getFusedHeading());
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);

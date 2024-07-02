@@ -37,7 +37,7 @@ public static final class OIConstants {
     
     public static final int kTurboButton = 2;
     //driving multipliers
-    public static final double kLowSpeedMultiplier = 0.8 ;
+    public static final double kLowSpeedMultiplier = 0.8;
     public static final double kMediumSpeedMultiplier = 0.9;
     public static final double kHighSpeedMultiplier = 1;
     
@@ -47,16 +47,10 @@ public static final class OIConstants {
    public static final int kUnderbotShooterHighButton = 4;
   public static final int kUnderbotShooterLowButton = 3;
 
-  //wall
-  public static final int kWallMoveUpButton = 7;
-  public static final int kWallMoveDownButton = 8;
-  public static final int kWallHomeButton = 9;
 
   //climber
-  public static final int kMoveHookUpButton = 7;
-  public static final int kMoveHookDownButton = 8;
-  public static final int kPullWinchUpButton = 9;
-  public static final int kReleaseWinchButton = 10;
+  public static final int kPullWinchUpButton = 7;
+  public static final int kReleaseWinchButton = 8;
     
   }
 
@@ -64,6 +58,9 @@ public static final class OIConstants {
     //ports
     public static final int kIntakeMotorCanId = 12;
     public static final int kShooterMotorCanId = 11;
+
+    public static final int kLeftGuideMotorCanId = 21;
+    public static final int kRightGuideMotorCanId = 22;
     public static final int kBeamBreakAnalogPort = 0;
 
     //beam break sensor
@@ -71,11 +68,16 @@ public static final class OIConstants {
 
     //speeds
     public static final double kIntakeSpeed = 0.2;
-    public static final double kOuttakeSpeed = -0.2;
+    public static final double kEjectSpeed = -0.2;
     public static final double kIntakeFeederSpeed = 0.6;
 
+    //guide speeds
+    public static final double kGuideWheelIntakeSpeed = -0.5;
+    public static final double kGuideWheelEjectSpeed = 0.5;
+
     public static final double kHighShooterRPM = -4750;
-   // public static final double kLowShooterRPM = -0.25;
+    public static final double kLaunchShooterRPM = -6500;
+    public static final double kLowShooterRPM = -500;
 
     //timings
     public static final double kShooterDelay = 0.5;
@@ -98,7 +100,7 @@ public static final class OIConstants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 10;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
@@ -116,7 +118,7 @@ public static final class OIConstants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 5.2;
+    public static final double kMaxSpeedMetersPerSecond = 5.0;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     public static final double kDirectionSlewRate = 1.2; // radians per second
@@ -171,7 +173,7 @@ public static final class OIConstants {
 
 
     //CHANGE ME BETWEEN MATCHES!!!!
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.0);
 
 
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;

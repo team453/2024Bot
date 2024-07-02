@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  public boolean isMultipleDrivers = false;
   private RobotContainer m_robotContainer;
 
   /**
@@ -27,14 +26,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    if(DriverStation.isJoystickConnected(0) && DriverStation.isJoystickConnected(1))
-    {
-      isMultipleDrivers = true;
-    }
-    else
-    {
-      isMultipleDrivers = false;
-    }
+   
     
    CameraServer.startAutomaticCapture();
    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -89,14 +81,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-     if(DriverStation.isJoystickConnected(0) && DriverStation.isJoystickConnected(1))
-    {
-      isMultipleDrivers = true;
-    }
-    else
-    {
-      isMultipleDrivers = false;
-    }
+    m_robotContainer.ResetBindings();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
