@@ -36,8 +36,9 @@ public static final class OIConstants {
     public static final double kDriveDeadband = 0.1;
     
     public static final int kTurboButton = 2;
+    
     //driving multipliers
-    public static final double kLowSpeedMultiplier = 0.8;
+    public static final double kLowSpeedMultiplier = 0.75;
     public static final double kMediumSpeedMultiplier = 0.9;
     public static final double kHighSpeedMultiplier = 1;
     
@@ -144,16 +145,16 @@ public static final class OIConstants {
 
     // SPARK MAX CAN IDs
 
-    public static final int kFrontRightDrivingCanId = 1;
-    public static final int kFrontLeftDrivingCanId = 3;
-    public static final int kRearLeftDrivingCanId = 5;
-    public static final int kRearRightDrivingCanId = 7;
+    public static final int kFrontRightDrivingCanId = 5;
+    public static final int kFrontLeftDrivingCanId = 7;
+    public static final int kRearLeftDrivingCanId = 1;
+    public static final int kRearRightDrivingCanId = 3;
 
 
-    public static final int kFrontRightTurningCanId = 8;
-    public static final int kFrontLeftTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 4;
-    public static final int kRearRightTurningCanId = 2;
+    public static final int kFrontRightTurningCanId = 4;
+    public static final int kFrontLeftTurningCanId = 2;
+    public static final int kRearLeftTurningCanId = 8;
+    public static final int kRearRightTurningCanId = 6;
 
     public static final boolean kGyroReversed = false;
   }
@@ -242,7 +243,7 @@ public static final class OIConstants {
     public static final Translation2d blModuleOffset = new Translation2d(-0.6477, 0.6477);
     public static final Translation2d brModuleOffset = new Translation2d(-0.6477, -0.6477);
 
-    public static final double maxModuleSpeed = 2; // M/S
+    public static final double maxModuleSpeed = 2.5; // M/S
 
     public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
       new PIDConstants(ModuleConstants.kDrivingP, ModuleConstants.kDrivingI, ModuleConstants.kDrivingD), // Translation constants 

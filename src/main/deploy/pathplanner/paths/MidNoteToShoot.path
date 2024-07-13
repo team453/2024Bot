@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.839352995021196,
-        "y": 7.436616160690702
+        "x": 3.410259374013754,
+        "y": 5.562647359246215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.839352995021192,
-        "y": 7.436616160690702
+        "x": 3.713165551413235,
+        "y": 5.553468384173504
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MidNote"
     },
     {
       "anchor": {
-        "x": 2.4324283942685536,
-        "y": 5.481494470203146
+        "x": 2.3681755687595727,
+        "y": 5.564105245857552
       },
       "prevControl": {
-        "x": 1.4324283942685536,
-        "y": 5.481494470203146
+        "x": 2.0652693913600926,
+        "y": 5.564105245857552
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MidShootSpot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 7.0,
+    "maxAcceleration": 7.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.28384005452966,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Rainbow Rumble",
   "previewStartingState": {
-    "rotation": -178.90878377473746,
+    "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

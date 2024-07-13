@@ -37,6 +37,7 @@ import frc.robot.Robot;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -82,13 +83,12 @@ public class RobotContainer {
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
     
     // Register Named Commands for PathPlanner
-    NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand(-0.75));
-    NamedCommands.registerCommand("startIntake", m_underBot.new IntakeCommand());
+    NamedCommands.registerCommand("shootCommand", m_underBot.new SequentialShootCommand());
+     NamedCommands.registerCommand("startIntake", m_underBot.new StartIntakeCommand());
+    NamedCommands.registerCommand("loadNote", m_underBot.new LoadNoteCommand());
     NamedCommands.registerCommand("ejectCommand", m_underBot.new EjectCommand());
-    NamedCommands.registerCommand("stopIntake", m_underBot.new StopMotorsCommand());
+    NamedCommands.registerCommand("stopMotors", m_underBot.new StopMotorsCommand());
     autoChooser = AutoBuilder.buildAutoChooser();
-
-    autoChooser.setDefaultOption("Shooter Routine", new PathPlannerAuto("basicShoot"));
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     ResetBindings();
@@ -222,6 +222,7 @@ private void configureCombinedBindings()
        //.whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
 
     new JoystickButton(m_driverController, OIConstants.kUnderbotShooterHighButton)
+        //.whileTrue(m_underBot.new LoadNoteCommand());
         .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterRPM));
 
         new JoystickButton(m_driverController, 10)

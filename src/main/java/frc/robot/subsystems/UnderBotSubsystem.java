@@ -1,19 +1,18 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.UnderBotSubsystemConstants;
-
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.UnderBotSubsystemConstants;
 
 public class UnderBotSubsystem extends SubsystemBase {
 
@@ -46,6 +45,7 @@ public class UnderBotSubsystem extends SubsystemBase {
   @Override
     public void periodic() {
         SmartDashboard.putString("Underbot State", state);
+        SmartDashboard.putNumber("intake volts", UnderBotSubsystem.this.m_intake.getOutputCurrent());
     }
     
     public void setIntakeMotor(double speed) {
@@ -411,7 +411,7 @@ public Command StopUnderbot()
     @Override
     public void initialize() {
         state = "Start Shooter";
-         m_shooterPIDController.setReference(UnderBotSubsystemConstants.kHighShooterRPM, CANSparkBase.ControlType.kVelocity);
+         m_shooterPIDController.setReference(UnderBotSubsystemConstants.kLaunchShooterRPM, CANSparkBase.ControlType.kVelocity);
     }
 
   
@@ -458,7 +458,9 @@ public class StartIntakeCommand extends Command {
     @Override
     public void initialize() {
         state = "Started Intake";
-        UnderBotSubsystem.this.setIntakeMotor(UnderBotSubsystemConstants.kIntakeSpeed);
+        //stop shooter
+        UnderBotSubsystem.this.setShooterMotor(0);
+        UnderBotSubsystem.this.setIntakeMotor(0.6);
         UnderBotSubsystem.this.intakeGuideWheels();
     }
 
@@ -518,16 +520,20 @@ public class StopMotorsCommand extends Command {
 
 // Then, to sequence them:
 public class SequentialShootCommand extends SequentialCommandGroup {
-    public SequentialShootCommand(double shooterSpeed) {
+    public SequentialShootCommand() {
         addCommands(
+            new LoadNoteCommand(),
+            new WaitCommand(0.2),
+            new StopMotorsCommand(),
             new StartShooterCommand(),
-            new WaitCommand(0.5),
+            new WaitCommand(0.6),
             new StartFeederCommand(),
-             new WaitCommand(2.0),
-            new StopMotorsCommand()
+            new WaitCommand(0.2)
         );
     }
 }
+
+
 
 public class SequentialIntakeCommand extends SequentialCommandGroup
 {
@@ -548,6 +554,37 @@ public class SequentialEjectCommand extends SequentialCommandGroup
             new WaitCommand(4),
             new StopMotorsCommand()
         );
+    }
+}
+public class LoadNoteCommand extends Command {
+ Timer timer = new Timer();
+    public LoadNoteCommand() {
+    }
+
+    @Override
+    public void initialize() {
+       timer.start();
+        timer.reset();
+    stopGuideWheels();
+     UnderBotSubsystem.this.setIntakeMotor(UnderBotSubsystemConstants.kEjectSpeed);
+     
+    }
+
+    @Override
+    public boolean isFinished() {
+        state = "Loading Note";
+        //if grabbed note or waited more than 0.3 sec
+        if(UnderBotSubsystem.this.m_intake.getOutputCurrent() > 48  || timer.get() > 0.6)
+        {
+            //don't stop the motor
+            return true;
+        }
+        else
+        {
+            return false;
+        } 
+
+
     }
 }
 }
