@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4194171612308972,
-      "y": 7.284140331476098
+      "x": 1.3952042110521514,
+      "y": 1.7089357153187112
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Straight"
+            "pathName": "SpeedTrain"
           }
         }
       ]

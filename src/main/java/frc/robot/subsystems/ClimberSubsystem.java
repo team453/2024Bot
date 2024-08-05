@@ -1,0 +1,63 @@
+package frc.robot.subsystems;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimberConstants;
+
+public class ClimberSubsystem extends SubsystemBase {
+    private final CANSparkMax m_wench;
+    //private final CANSparkMax m_hook;
+    private String state;
+
+    public ClimberSubsystem() {
+        m_wench = new CANSparkMax(ClimberConstants.kWenchMotorCanId, MotorType.kBrushed);
+      //  m_hook = new CANSparkMax(ClimberConstants.kClimberMotorCanId, MotorType.kBrushed);
+        state = "Ready";
+    }
+
+    @Override
+    public void periodic() {
+       SmartDashboard.putString("Climber State", state);
+    }
+
+    // Inner class for operating the wench
+    public class MoveWenchCommand extends Command {
+    private boolean isPullingUp;
+
+    public MoveWenchCommand(boolean isPullingUp) {
+        this.isPullingUp = isPullingUp;
+        // Add requirements to ensure this command has exclusive access to the WallSubsystem
+        addRequirements(ClimberSubsystem.this);
+    }
+
+    @Override
+    public void execute() {
+      if(isPullingUp)
+      {
+        state = "Pulling Wench";
+        m_wench.set(ClimberConstants.kWenchSpeed);
+      }
+      else
+      {
+        state = "Releasing Wench";
+        m_wench.set(-ClimberConstants.kWenchSpeed);
+      }
+    }
+
+     @Override
+    public void end(boolean interrupted) {
+        // Command end action: Stop the motor, whether the command ends normally or is interrupted
+        m_wench.set(0);
+        state = "Idle";
+    }
+    }
+
+}
+
+
+
+

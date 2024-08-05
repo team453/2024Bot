@@ -47,8 +47,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
   private final Field2d field2d = new Field2d();
 
-  private double previousPipelineTimestamp = 0;
-
   public PoseEstimatorSubsystem(DriveSubsystem drivetrainSubsystem) {
     this.drivetrainSubsystem = drivetrainSubsystem;
     AprilTagFieldLayout layout;

@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.984617569805751,
+        "y": 2.4592756746141147
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.101198730214863,
+        "y": -0.281060077098759
+      },
+      "isLocked": false,
+      "linkedName": "note4post"
+    },
+    {
+      "anchor": {
+        "x": 2.3314596684687268,
+        "y": 5.215304193094513
+      },
+      "prevControl": {
+        "x": 1.3195366447091803,
+        "y": 3.625066382409251
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SourceShoot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 7.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -2.321372601504967,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Sorce Side",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

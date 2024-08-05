@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -17,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private RobotContainer m_robotContainer;
 
   /**
@@ -26,9 +26,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Starts up webcams!!
-    CameraServer.startAutomaticCapture();
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+   
+    
+    CameraServer.startAutomaticCapture(0);
+    CameraServer.startAutomaticCapture(1);
+   // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   }
@@ -80,6 +82,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.ResetBindings();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -87,7 +90,18 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    /*
+    I dont think this works
+    if(getAlliance())
+    {
+      m_driveSubsystem.flipGyro();
+    }*/
+    
   }
+
+
+  
 
   /** This function is called periodically during operator control. */
   @Override
@@ -97,9 +111,23 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+
+    
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+
+  //TRUE if we're on red alliance, FALSE if we're on blue alliance (probably??)
+  public boolean getAlliance()
+  {
+    var alliance = DriverStation.getAlliance();
+        if(alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+  }
 }

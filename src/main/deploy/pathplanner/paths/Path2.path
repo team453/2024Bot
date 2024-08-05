@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3070140425995143,
-        "y": 1.0408215102144494
+        "x": 3.6715900290846095,
+        "y": 7.096994083000375
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3216735004898588,
-        "y": 2.242897057222686
+        "x": 4.6715900290846095,
+        "y": 7.096994083000375
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AmpNote"
     },
     {
       "anchor": {
-        "x": 2.113284226568454,
-        "y": 4.617729235458472
+        "x": 1.3125934353977478,
+        "y": 5.55492627078484
       },
       "prevControl": {
-        "x": 2.0546463950070764,
-        "y": 3.7528212199281556
+        "x": 0.31259343539774775,
+        "y": 5.55492627078484
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NewPoint"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -26.56505117707812,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Rainbow Rumble",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
