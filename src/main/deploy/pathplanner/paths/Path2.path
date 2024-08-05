@@ -3,43 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5976499455773605,
-        "y": 3.957784608133034
+        "x": 3.6715900290846095,
+        "y": 7.096994083000375
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3638796693126274,
-        "y": 4.434605349710255
+        "x": 4.6715900290846095,
+        "y": 7.096994083000375
       },
       "isLocked": false,
-      "linkedName": "TrussNote"
+      "linkedName": "AmpNote"
     },
     {
       "anchor": {
-        "x": 2.3681755687595727,
-        "y": 5.564105245857552
+        "x": 1.3125934353977478,
+        "y": 5.55492627078484
       },
       "prevControl": {
-        "x": 2.3681755687595727,
-        "y": 5.424105245857552
+        "x": 0.31259343539774775,
+        "y": 5.55492627078484
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MidShootSpot"
+      "linkedName": "NewPoint"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 7.0,
-    "maxAcceleration": 7.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.18778013269742888,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
@@ -48,5 +48,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

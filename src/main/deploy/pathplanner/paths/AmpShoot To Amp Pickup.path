@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3401303606158823,
-        "y": 5.573284220930263
+        "x": 2.1689107001589663,
+        "y": 6.358984244364889
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.340130360615885,
-        "y": 5.573284220930263
+        "x": 0.5762369299326805,
+        "y": 7.178742802569595
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AmpShoot"
     },
     {
       "anchor": {
-        "x": 2.3681755687595727,
-        "y": 5.564105245857552
+        "x": 3.6715900290846095,
+        "y": 7.096994083000375
       },
       "prevControl": {
-        "x": 2.037732466141958,
-        "y": 5.55492627078484
+        "x": 2.6715900290846095,
+        "y": 7.096994083000375
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MidShootSpot"
+      "linkedName": "AmpNote"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 7.0,
-    "maxAcceleration": 7.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -43,10 +49,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Rainbow Rumble",
+  "folder": "Amp Side",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 49.485914846914326,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

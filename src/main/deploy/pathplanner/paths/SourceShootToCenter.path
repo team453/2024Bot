@@ -3,49 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5976499455773605,
-        "y": 3.957784608133034
+        "x": 2.3314596684687268,
+        "y": 5.215304193094513
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3638796693126274,
-        "y": 4.434605349710255
+        "x": 1.9332912259121557,
+        "y": 0.05082527640486878
       },
       "isLocked": false,
-      "linkedName": "TrussNote"
+      "linkedName": "SourceShoot"
     },
     {
       "anchor": {
-        "x": 2.3681755687595727,
-        "y": 5.564105245857552
+        "x": 7.591028020857753,
+        "y": 2.435854001522554
       },
       "prevControl": {
-        "x": 2.3681755687595727,
-        "y": 5.424105245857552
+        "x": 6.431655202825382,
+        "y": 1.1945053276697124
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MidShootSpot"
+      "linkedName": "Note4Pre"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 7.0,
-    "maxAcceleration": 7.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.18778013269742888,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Rainbow Rumble",
+  "folder": "Sorce Side",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -34.380344723844814,
     "velocity": 0
   },
   "useDefaultConstraints": false

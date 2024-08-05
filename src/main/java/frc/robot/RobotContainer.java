@@ -101,7 +101,7 @@ public class RobotContainer {
     if(DriverStation.isJoystickConnected(0) && DriverStation.isJoystickConnected(1))
     {
        SmartDashboard.putString("Driver Style", "BOTH JOYSTICKS");
-      configureDriverBindings();
+      configureCombinedBindings();
       configureOperatorBindings();
     }
     else
@@ -111,9 +111,9 @@ public class RobotContainer {
     }
   }
   private void updateShuffleboard() {
-    speedChooser.setDefaultOption("Low Speed", OIConstants.kLowSpeedMultiplier);
+    speedChooser.setDefaultOption("High Speed", OIConstants.kHighSpeedMultiplier);
+    speedChooser.addOption("Low Speed", OIConstants.kLowSpeedMultiplier);
     speedChooser.addOption("Medium Speed", OIConstants.kMediumSpeedMultiplier);
-    speedChooser.addOption("High Speed", OIConstants.kHighSpeedMultiplier);
     SmartDashboard.putData("Speed Multiplier", speedChooser);
     
     
@@ -219,11 +219,10 @@ private void configureCombinedBindings()
 
    new JoystickButton(m_driverController, OIConstants.kUnderbotShooterLowButton) 
     .whileTrue(m_underBot.new ShootCrazyCommand(UnderBotSubsystemConstants.kLaunchShooterRPM));
-       //.whileTrue(m_underBot.new SourceIntakeCommand(-0.1));
 
     new JoystickButton(m_driverController, OIConstants.kUnderbotShooterHighButton)
         //.whileTrue(m_underBot.new LoadNoteCommand());
-        .whileTrue(m_underBot.new ShootCommand(UnderBotSubsystemConstants.kHighShooterRPM));
+        .whileTrue(m_underBot.new ShootCrazyCommand(UnderBotSubsystemConstants.kLaunchShooterRPM));
 
         new JoystickButton(m_driverController, 10)
         //rpm, set speed
